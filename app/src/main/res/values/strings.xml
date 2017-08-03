@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Recycler-adapter</string>
+
+    <string name="main_items">
+        <item>simple item</item>
+        <item>multi type</item>
+    </string>
+</resources>
