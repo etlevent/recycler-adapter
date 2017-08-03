@@ -23,7 +23,14 @@ public class ItemViewDelegateManager {
         return new ItemViewDelegateManager();
     }
 
-    //添加Class - item映射, 单一映射
+    /**
+     * 添加Class - item映射, 单一映射
+     *
+     * @param clazz
+     * @param delegate
+     * @param <T>
+     * @param <VH>
+     */
     public <T, VH extends RecyclerView.ViewHolder> void addDelegate(@NonNull Class<? extends T> clazz,
                                                                     @NonNull ItemViewDelegate<T, VH> delegate) {
         if (delegate == null || clazz == null)
@@ -32,7 +39,14 @@ public class ItemViewDelegateManager {
         typeMap.put(clazz, new ItemTypeHolder(clazz, delegate));
     }
 
-    //添加Class - items映射, 一对多映射关系
+    /**
+     * 添加Class - items映射, 一对多映射关系
+     *
+     * @param clazz
+     * @param chooser
+     * @param delegates
+     * @param <T>
+     */
     protected <T> void addDelegate(@NonNull Class<? extends T> clazz,
                                    @NonNull ViewChooser<T> chooser,
                                    @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
@@ -48,7 +62,13 @@ public class ItemViewDelegateManager {
         return delegates.size();
     }
 
-    //获取对应的item Type, 为保证ItemType的唯一性, 采用delegates列表中的下标
+    /**
+     * 获取对应的item Type, 为保证ItemType的唯一性, 采用delegates列表中的下标
+     *
+     * @param item
+     * @param position
+     * @return
+     */
     public int getItemViewType(@NonNull final Object item, final int position) {
         Class itemClass = item.getClass();
         ItemViewDelegate delegate;
@@ -68,7 +88,12 @@ public class ItemViewDelegateManager {
                 + item + "], position=[" + position + "]");
     }
 
-    //viewType即delegate在列表中的下标
+    /**
+     * viewType即delegate在列表中的下标
+     *
+     * @param viewType
+     * @return
+     */
     public ItemViewDelegate getItemViewDelegate(int viewType) {
         return delegates.get(viewType);
     }

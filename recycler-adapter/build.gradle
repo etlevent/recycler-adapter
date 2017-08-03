@@ -31,14 +31,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-tasks.withType(Javadoc) {
-    options {
-        encoding 'UTF-8'
-        charSet 'UTF-8'
-        links "http://docs.oracle.com/javase/7/docs/api"
-    }
-}
-
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
@@ -86,7 +78,14 @@ install {
         }
     }
 }
-
+tasks.withType(Javadoc) {
+    options {
+        encoding 'UTF-8'
+        charSet 'UTF-8'
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
@@ -103,7 +102,6 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
-
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {
