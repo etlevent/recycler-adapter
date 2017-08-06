@@ -2,4 +2,5 @@
 <resources>
     <item name="no_more_view" type="id" />
     <item name="loading_fail_view" type="id" />
+    <item name="item_position" type="id" />
 </resources>
