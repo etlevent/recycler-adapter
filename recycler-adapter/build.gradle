@@ -35,7 +35,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'cherry.android'
-version = '1.0.0'
+version = '1.0.1'
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -99,7 +99,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
 }
 artifacts {
-    archives javadocJar
+//    archives javadocJar
     archives sourcesJar
 }
 Properties properties = new Properties()
