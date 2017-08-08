@@ -7,5 +7,5 @@ import android.support.v7.widget.RecyclerView;
  */
 
 public interface OneToManyDelegate<T> {
-    OneToManyChooser bindDelegate(ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates);
+    OneToManyChooser<T> bindDelegate(ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates);
 }

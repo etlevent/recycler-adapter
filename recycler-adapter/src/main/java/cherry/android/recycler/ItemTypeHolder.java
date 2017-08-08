@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
  * Created by Administrator on 2017/6/19.
  */
 
-public class ItemTypeHolder<T> {
+/*public*/ class ItemTypeHolder<T> {
     private Class<? extends T> itemTypeClass;
     private SparseArrayCompat<ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
     private ViewChooser<T> chooser;

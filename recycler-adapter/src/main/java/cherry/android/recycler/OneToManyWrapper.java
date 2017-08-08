@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
  * Created by Administrator on 2017/6/19.
  */
 
-public class OneToManyWrapper<T> implements OneToManyDelegate<T>, OneToManyChooser<T> {
+/*public*/ class OneToManyWrapper<T> implements OneToManyDelegate<T>, OneToManyChooser<T> {
 
     private Class<? extends T> clazz;
     private ItemViewDelegateManager manager;

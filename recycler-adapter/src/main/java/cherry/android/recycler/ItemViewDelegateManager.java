@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by Administrator on 2017/6/19.
  */
 
-public class ItemViewDelegateManager {
+/*public*/ class ItemViewDelegateManager {
     private SparseArrayCompat<ItemViewDelegate<?, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>();
     private ArrayMap<Class<?>, ItemTypeHolder<?>> typeMap = new ArrayMap<>();
 

@@ -100,7 +100,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mDelegateManager.addDelegate(clazz, delegate);
     }
 
-    public <T> OneToManyDelegate addDelegate(@NonNull Class<? extends T> clazz) {
+    public <T> OneToManyDelegate<T> addDelegate(@NonNull Class<? extends T> clazz) {
         OneToManyWrapper<T> wrapper = new OneToManyWrapper<>(clazz, mDelegateManager);
         return wrapper;
     }
