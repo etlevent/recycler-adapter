@@ -1,5 +1,6 @@
 package cherry.android.recycler.sample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,6 @@ import cherry.android.recycler.wrapper.HeaderAndFooterWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private RecyclerAdapter mAdapter;
     private HeaderAndFooterWrapper mWrapper;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         mAdapter = new CommonAdapter<String, ViewHolder>(android.R.layout.activity_list_item) {
 
             @Override
@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position) {
-                Log.d("Test", "postion = " + position);
+                Log.d("Test", "position = " + position);
+                startActivity(new Intent(MainActivity.this, SecondActivity.class));
             }
         });
     }

@@ -12,8 +12,8 @@ import java.util.Map;
  */
 
 /*public*/ class ItemViewDelegateManager {
-    private SparseArrayCompat<ItemViewDelegate<?, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>();
-    private ArrayMap<Class<?>, ItemTypeHolder<?>> typeMap = new ArrayMap<>();
+    private final SparseArrayCompat<ItemViewDelegate<?, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>();
+    private final ArrayMap<Class<?>, ItemTypeHolder<?>> typeMap = new ArrayMap<>();
 
     private ItemViewDelegateManager() {
 
@@ -31,6 +31,7 @@ import java.util.Map;
      * @param <T>
      * @param <VH>
      */
+    @SuppressWarnings("unchecked")
     public <T, VH extends RecyclerView.ViewHolder> void addDelegate(@NonNull Class<? extends T> clazz,
                                                                     @NonNull ItemViewDelegate<T, VH> delegate) {
         if (delegate == null || clazz == null)
@@ -47,13 +48,14 @@ import java.util.Map;
      * @param delegates
      * @param <T>
      */
+    @SuppressWarnings("unchecked")
     protected <T> void addDelegate(@NonNull Class<? extends T> clazz,
                                    @NonNull ViewChooser<T> chooser,
-                                   @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
+                                   @NonNull ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>... delegates) {
         if (delegates == null || clazz == null)
             throw new NullPointerException("class or delegates should not be NULL!");
-        for (int i = 0; i < delegates.length; i++) {
-            this.delegates.put(this.delegates.size(), delegates[i]);
+        for (ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
+            this.delegates.put(this.delegates.size(), delegate);
         }
         typeMap.put(clazz, new ItemTypeHolder(clazz, chooser, delegates));
     }
@@ -69,6 +71,7 @@ import java.util.Map;
      * @param position
      * @return
      */
+    @SuppressWarnings("unchecked")
     public int getItemViewType(@NonNull final Object item, final int position) {
         Class itemClass = item.getClass();
         ItemViewDelegate delegate;

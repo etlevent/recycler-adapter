@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder> implements ItemViewDelegate<T, VH> {
 
     @LayoutRes
-    private int mLayoutId;
+    private final int mLayoutId;
     private Constructor<VH> mConstructor;
 
     public BaseItemViewDelegate(@LayoutRes int layoutId) {
@@ -36,7 +36,7 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
         if (mConstructor == null) {
             Type type = getClass().getGenericSuperclass();
             Type[] params = ((ParameterizedType) type).getActualTypeArguments();
-            Class<VH> clazz = (Class<VH>) params[1];
+            @SuppressWarnings("unchecked") Class<VH> clazz = (Class<VH>) params[1];
             mConstructor = getHolderConstructor(clazz);
         }
         try {

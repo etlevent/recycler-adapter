@@ -7,5 +7,5 @@ import android.support.v7.widget.RecyclerView;
  */
 
 public interface ViewChooser<T> {
-    Class<? extends ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> choose(T t, int position);
+    Class<? extends ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>> choose(T t, int position);
 }

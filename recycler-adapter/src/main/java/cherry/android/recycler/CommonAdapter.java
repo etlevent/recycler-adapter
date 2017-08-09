@@ -1,5 +1,6 @@
 package cherry.android.recycler;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,17 +20,18 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
 
     private Constructor<VH> constructor;
 
-    public CommonAdapter(List<T> data, int itemLayoutId) {
+    public CommonAdapter(List<T> data, @LayoutRes int itemLayoutId) {
         super(data);
         addDelegateWithId(itemLayoutId);
     }
 
-    public CommonAdapter(int itemLayoutId) {
+    public CommonAdapter(@LayoutRes int itemLayoutId) {
         super();
         addDelegateWithId(itemLayoutId);
     }
 
-    private void addDelegateWithId(final int itemLayoutId) {
+    @SuppressWarnings("unchecked")
+    private void addDelegateWithId(@LayoutRes final int itemLayoutId) {
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
         Class<T> clazz = (Class<T>) params[0];
@@ -44,7 +46,7 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
             }
 
             @Override
-            public void convert(VH holder, T t, int position) {
+            public void convert(@NonNull VH holder, T t, int position) {
                 CommonAdapter.this.convert(holder, t, position);
             }
         });
@@ -54,7 +56,7 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
 
 //    protected abstract VH createDefaultViewHolder(View itemView);
 
-    protected VH createDefaultViewHolder(Class<VH> holder, View itemView) {
+    private VH createDefaultViewHolder(Class<VH> holder, View itemView) {
         if (constructor == null)
             constructor = getHolderConstructor(holder);
         try {
@@ -67,8 +69,7 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
 
     private static <VH> Constructor<VH> getHolderConstructor(Class<VH> clazz) {
         try {
-            Constructor constructor = clazz.getConstructor(View.class);
-            return constructor;
+            return (Constructor) clazz.getConstructor(View.class);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("can't get construct with View.class for class: " + clazz);

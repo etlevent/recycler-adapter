@@ -19,7 +19,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private int mOrientation = VERTICAL;
     private int mGap = 1;
-    private Paint mPaint;
+    private final Paint mPaint;
     private boolean mUseSpace;
 
     public DividerItemDecoration(Context context, int orientation) {

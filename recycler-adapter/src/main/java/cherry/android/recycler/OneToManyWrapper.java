@@ -9,9 +9,9 @@ import android.support.v7.widget.RecyclerView;
 
 /*public*/ class OneToManyWrapper<T> implements OneToManyDelegate<T>, OneToManyChooser<T> {
 
-    private Class<? extends T> clazz;
-    private ItemViewDelegateManager manager;
-    private ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>[] delegates;
+    private final Class<? extends T> clazz;
+    private final ItemViewDelegateManager manager;
+    private ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>[] delegates;
     private ViewChooser<T> chooser;
 
     public OneToManyWrapper(@NonNull Class<? extends T> clazz,
@@ -27,7 +27,7 @@ import android.support.v7.widget.RecyclerView;
     }
 
     @Override
-    public OneToManyChooser bindDelegate(ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
+    public OneToManyChooser<T> bindDelegate(ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>... delegates) {
         this.delegates = delegates;
         return this;
     }

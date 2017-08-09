@@ -49,7 +49,7 @@ public class ExtendRecyclerView extends RecyclerView {
         }
     }
 
-    private AdapterDataObserver mObserver = new AdapterDataObserver() {
+    private final AdapterDataObserver mObserver = new AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();

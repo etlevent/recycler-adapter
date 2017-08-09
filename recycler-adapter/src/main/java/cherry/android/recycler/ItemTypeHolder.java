@@ -10,27 +10,28 @@ import android.support.v7.widget.RecyclerView;
  */
 
 /*public*/ class ItemTypeHolder<T> {
-    private Class<? extends T> itemTypeClass;
-    private SparseArrayCompat<ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
+    private final Class<? extends T> itemTypeClass;
+    private final SparseArrayCompat<ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
     private ViewChooser<T> chooser;
 
-    protected ItemTypeHolder(@NonNull Class<? extends T> itemTypeClass,
-                             @Nullable ViewChooser<T> chooser,
-                             @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
+    ItemTypeHolder(@NonNull Class<? extends T> itemTypeClass,
+                   @Nullable ViewChooser<T> chooser,
+                   @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
         this.itemTypeClass = itemTypeClass;
         this.chooser = chooser;
-        for (int i = 0; i < delegates.length; i++) {
-            this.delegates.put(this.delegates.size(), delegates[i]);
+        for (ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
+            this.delegates.put(this.delegates.size(), delegate);
         }
     }
 
-    protected ItemTypeHolder(Class<? extends T> itemTypeClass,
-                             ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate) {
+    ItemTypeHolder(Class<? extends T> itemTypeClass,
+                   ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate) {
         this.itemTypeClass = itemTypeClass;
         this.delegates.put(this.delegates.size(), delegate);
     }
 
-    protected ItemViewDelegate getItemViewDelegate(@NonNull Object item, int position) {
+    @SuppressWarnings("unchecked")
+    ItemViewDelegate getItemViewDelegate(@NonNull Object item, int position) {
         if (this.chooser == null) {
             return delegates.get(0);
         }
@@ -44,7 +45,7 @@ import android.support.v7.widget.RecyclerView;
         throw new IllegalArgumentException("cannot find using class: " + itemViewClass.getSimpleName());
     }
 
-    protected Class<? extends T> getItemClass() {
+    Class<? extends T> getItemClass() {
         return this.itemTypeClass;
     }
 }

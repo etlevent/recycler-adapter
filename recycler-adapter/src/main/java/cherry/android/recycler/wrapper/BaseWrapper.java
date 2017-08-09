@@ -14,8 +14,8 @@ import java.util.List;
  */
 
 public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private RecyclerView.Adapter mInnerAdapter;
-    private List<Integer> mWrapperViewTypeList;
+    private final RecyclerView.Adapter mInnerAdapter;
+    private final List<Integer> mWrapperViewTypeList;
     private int mLastRealCount;
     private boolean mIsDataChanged;
 
@@ -48,6 +48,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
         return mInnerAdapter.onCreateViewHolder(parent, viewType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (isWrapperViewPosition(position)) {
@@ -78,6 +79,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         mInnerAdapter.onViewAttachedToWindow(holder);
@@ -96,9 +98,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private boolean isWrapperViewType(int viewType) {
-        if (mWrapperViewTypeList.size() == 0)
-            return false;
-        return mWrapperViewTypeList.contains(viewType);
+        return mWrapperViewTypeList.size() != 0 && mWrapperViewTypeList.contains(viewType);
     }
 
     abstract int getWrapperTopCount();
@@ -113,7 +113,16 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
 
     abstract RecyclerView.ViewHolder onCreateWrapperViewHolder(ViewGroup parent, int viewType);
 
-    private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+    protected boolean isDataCountChanged() {
+        return mIsDataChanged;
+    }
+
+    protected void notifyItemCountChanged() {
+        mIsDataChanged = mLastRealCount != getRealItemCount();
+        mLastRealCount = getRealItemCount();
+    }
+
+    private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             notifyDataSetChanged();
@@ -150,13 +159,4 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
             notifyItemCountChanged();
         }
     };
-
-    protected boolean isDataCountChanged() {
-        return mIsDataChanged;
-    }
-
-    protected void notifyItemCountChanged() {
-        mIsDataChanged = mLastRealCount != getRealItemCount();
-        mLastRealCount = getRealItemCount();
-    }
 }

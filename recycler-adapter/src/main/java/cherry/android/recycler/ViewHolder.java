@@ -10,7 +10,7 @@ import android.view.View;
 
 public class ViewHolder extends RecyclerView.ViewHolder {
 
-    private SparseArrayCompat<View> mHolderViews;
+    private final SparseArrayCompat<View> mHolderViews;
 
     public ViewHolder(View itemView) {
         super(itemView);

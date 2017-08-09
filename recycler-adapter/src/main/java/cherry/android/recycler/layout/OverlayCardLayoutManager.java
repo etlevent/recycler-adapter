@@ -21,7 +21,7 @@ public class OverlayCardLayoutManager extends RecyclerView.LayoutManager {
     private static final float Y_GAP = 40;
 
     private RecyclerView mRecyclerView;
-    private ItemTouchHelper mItemTouchHelper;
+    private final ItemTouchHelper mItemTouchHelper;
 
     private List mItems;
 

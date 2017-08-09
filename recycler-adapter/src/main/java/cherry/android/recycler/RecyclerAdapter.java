@@ -15,7 +15,7 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected List<?> mItems;
-    protected ItemViewDelegateManager mDelegateManager;
+    protected final ItemViewDelegateManager mDelegateManager;
     private LayoutInflater mInflater;
 
     private OnItemClickListener mItemClickListener;
@@ -48,6 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return holder;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (mItems == null) return;
@@ -101,8 +102,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public <T> OneToManyDelegate<T> addDelegate(@NonNull Class<? extends T> clazz) {
-        OneToManyWrapper<T> wrapper = new OneToManyWrapper<>(clazz, mDelegateManager);
-        return wrapper;
+        return new OneToManyWrapper<>(clazz, mDelegateManager);
     }
 
     public void setItems(List<?> items) {
