@@ -87,8 +87,18 @@ import java.util.Map;
                 return delegates.indexOfValue(delegate);
             }
         }
-        throw new IllegalArgumentException("cannot get A itemType with item: ["
-                + item + "], position=[" + position + "]");
+        StringBuilder builder = new StringBuilder();
+        builder.append("cannot get A itemType with item: [")
+                .append(item)
+                .append("], position=[")
+                .append(position)
+                .append(']');
+        if (item != null) {
+            builder.append(", item class=[")
+                    .append(item.getClass())
+                    .append(']');
+        }
+        throw new IllegalArgumentException(builder.toString());
     }
 
     /**
