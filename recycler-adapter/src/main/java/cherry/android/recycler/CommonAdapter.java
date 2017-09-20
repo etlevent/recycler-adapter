@@ -3,6 +3,7 @@ package cherry.android.recycler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,9 +61,13 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
         if (constructor == null)
             constructor = getHolderConstructor(holder);
         try {
+            constructor.setAccessible(true);
             return constructor.newInstance(itemView);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("recyclerAdapter", "[createDefaultViewHolder]", e);
+        }finally {
+            if (constructor != null)
+                constructor.setAccessible(false);
         }
         throw new IllegalArgumentException("cant create instance for class: " + holder);
     }
@@ -71,8 +76,8 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
         try {
             return (Constructor) clazz.getConstructor(View.class);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("can't get construct with View.class for class: " + clazz);
+            Log.e("recyclerAdapter", "[getHolderConstructor]", e);
+            throw new IllegalArgumentException("can't get construct in class: " + clazz + "(View itemView)");
         }
     }
 }

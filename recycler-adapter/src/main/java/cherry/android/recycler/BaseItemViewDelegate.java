@@ -3,12 +3,12 @@ package cherry.android.recycler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -40,13 +40,14 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
             mConstructor = getHolderConstructor(clazz);
         }
         try {
+            mConstructor.setAccessible(true);
             return mConstructor.newInstance(itemView);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e("recyclerAdapter", "[createViewHolder] ", e);
+        } finally {
+            if (mConstructor != null) {
+                mConstructor.setAccessible(false);
+            }
         }
         throw new IllegalArgumentException("cannot create holder instance by view");
     }
