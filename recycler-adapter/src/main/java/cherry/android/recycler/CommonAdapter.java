@@ -3,7 +3,6 @@ package cherry.android.recycler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,8 +41,7 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
             @Override
             public VH createViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
                 View itemView = inflater.inflate(itemLayoutId, parent, false);
-//                return CommonAdapter.this.createDefaultViewHolder(itemView);
-                return createDefaultViewHolder(holderClazz, itemView);
+                return ViewHolderHelper.createViewHolder(holderClazz, itemView);
             }
 
             @Override
@@ -54,30 +52,4 @@ public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> exten
     }
 
     protected abstract void convert(VH holder, T t, int position);
-
-//    protected abstract VH createDefaultViewHolder(View itemView);
-
-    private VH createDefaultViewHolder(Class<VH> holder, View itemView) {
-        if (constructor == null)
-            constructor = getHolderConstructor(holder);
-        try {
-            constructor.setAccessible(true);
-            return constructor.newInstance(itemView);
-        } catch (Exception e) {
-            Log.e("recyclerAdapter", "[createDefaultViewHolder]", e);
-        }finally {
-            if (constructor != null)
-                constructor.setAccessible(false);
-        }
-        throw new IllegalArgumentException("cant create instance for class: " + holder);
-    }
-
-    private static <VH> Constructor<VH> getHolderConstructor(Class<VH> clazz) {
-        try {
-            return (Constructor) clazz.getConstructor(View.class);
-        } catch (NoSuchMethodException e) {
-            Log.e("recyclerAdapter", "[getHolderConstructor]", e);
-            throw new IllegalArgumentException("can't get construct in class: " + clazz + "(View itemView)");
-        }
-    }
 }

@@ -3,12 +3,10 @@ package cherry.android.recycler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -20,7 +18,6 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
 
     @LayoutRes
     private final int mLayoutId;
-    private Constructor<VH> mConstructor;
 
     public BaseItemViewDelegate(@LayoutRes int layoutId) {
         this.mLayoutId = layoutId;
@@ -33,31 +30,9 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
     }
 
     private VH createViewHolder(View itemView) {
-        if (mConstructor == null) {
-            Type type = getClass().getGenericSuperclass();
-            Type[] params = ((ParameterizedType) type).getActualTypeArguments();
-            @SuppressWarnings("unchecked") Class<VH> clazz = (Class<VH>) params[1];
-            mConstructor = getHolderConstructor(clazz);
-        }
-        try {
-            mConstructor.setAccessible(true);
-            return mConstructor.newInstance(itemView);
-        } catch (Exception e) {
-            Log.e("recyclerAdapter", "[createViewHolder] ", e);
-        } finally {
-            if (mConstructor != null) {
-                mConstructor.setAccessible(false);
-            }
-        }
-        throw new IllegalArgumentException("cannot create holder instance by view");
-    }
-
-    private static <VH> Constructor<VH> getHolderConstructor(Class<VH> clazz) {
-        try {
-            return clazz.getConstructor(View.class);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        throw new IllegalArgumentException("cannot find constructor with parameter View.class: " + clazz);
+        Type type = getClass().getGenericSuperclass();
+        Type[] params = ((ParameterizedType) type).getActualTypeArguments();
+        @SuppressWarnings("unchecked") Class<VH> clazz = (Class<VH>) params[1];
+        return ViewHolderHelper.createViewHolder(clazz, itemView);
     }
 }
