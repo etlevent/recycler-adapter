@@ -29,10 +29,24 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
         return createViewHolder(itemView);
     }
 
+    private Class<VH> mHolderClass;
+
     private VH createViewHolder(View itemView) {
-        Type type = getClass().getGenericSuperclass();
+        if (mHolderClass == null) {
+            mHolderClass = findHolderClass(getClass());
+        }
+        return ViewHolderHelper.createViewHolder(mHolderClass, itemView);
+    }
+
+    private static <H> Class<H> findHolderClass(Class clazz) {
+        Type type = clazz.getGenericSuperclass();
         Type[] params = ((ParameterizedType) type).getActualTypeArguments();
-        @SuppressWarnings("unchecked") Class<VH> clazz = (Class<VH>) params[1];
-        return ViewHolderHelper.createViewHolder(clazz, itemView);
+        if (params.length < 2) {
+            if (!ItemViewDelegate.class.isAssignableFrom(clazz)) {
+                throw new IllegalArgumentException("cannot find Holder CLASS");
+            }
+            return findHolderClass(clazz.getSuperclass());
+        }
+        return (Class<H>) params[1];
     }
 }

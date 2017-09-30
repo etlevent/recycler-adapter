@@ -105,6 +105,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return new OneToManyWrapper<>(clazz, mDelegateManager);
     }
 
+    public List<?> getItems() {
+        return this.mItems;
+    }
+
     public void setItems(List<?> items) {
         this.mItems = items;
         notifyDataSetChanged();
@@ -125,36 +129,4 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public interface OnItemLongClickListener {
         boolean onItemLongClick(View itemView, RecyclerView.ViewHolder holder, int position);
     }
-
-//    private static final ArrayMap<ItemViewDelegate, Constructor> CONSTRUCTORS = new ArrayMap<>();
-//    private RecyclerView.ViewHolder createViewHolder(ItemViewDelegate delegate, View itemView) {
-//        Constructor constructor = CONSTRUCTORS.get(delegate);
-//        if (constructor == null) {
-//            constructor = getHolderConstructor(delegate);
-//            CONSTRUCTORS.put(delegate, constructor);
-//        }
-//        try {
-//            return (RecyclerView.ViewHolder) constructor.newInstance(itemView);
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-//        throw new IllegalArgumentException("cant create instance for class: " + delegate);
-//    }
-//
-//    private static <VH> Constructor<VH> getHolderConstructor(ItemViewDelegate delegate) {
-//        Type type = delegate.getClass().getGenericSuperclass();
-//        Type[] params = ((ParameterizedType)type).getActualTypeArguments();
-//        Class<VH> clazz = (Class<VH>) params[1];
-//        try {
-//            Constructor constructor = clazz.getConstructor(View.class);
-//            return constructor;
-//        } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//            throw new IllegalArgumentException("can't get construct with View.class for class: " + clazz);
-//        }
-//    }
 }
