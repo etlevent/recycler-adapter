@@ -12,7 +12,7 @@ import java.util.Random;
 
 import cherry.android.recycler.ItemViewDelegate;
 import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewChooser;
+import cherry.android.recycler.ViewConverter;
 import cherry.android.recycler.sample.delegate.SimpleDelegate1;
 import cherry.android.recycler.sample.delegate.SimpleDelegate2;
 import cherry.android.recycler.sample.model.Foo;
@@ -38,9 +38,9 @@ public class SecondActivity extends AppCompatActivity {
         mAdapter = new RecyclerAdapter();
         mAdapter.addDelegate(Foo.class)
                 .bindDelegate(new SimpleDelegate1(), new SimpleDelegate2())
-                .to(new ViewChooser<Foo>() {
+                .to(new ViewConverter<Foo>() {
                     @Override
-                    public Class<? extends ItemViewDelegate<? extends Foo, ? extends RecyclerView.ViewHolder>> choose(Foo foo, int position) {
+                    public Class<? extends ItemViewDelegate> convert(Foo foo, int position) {
                         IFoo iFoo = foo.getBody();
                         if (iFoo instanceof Foo1)
                             return SimpleDelegate1.class;

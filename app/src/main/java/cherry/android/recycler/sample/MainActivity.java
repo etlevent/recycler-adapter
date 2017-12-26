@@ -18,7 +18,7 @@ import cherry.android.recycler.BaseItemViewDelegate;
 import cherry.android.recycler.CommonAdapter;
 import cherry.android.recycler.ItemViewDelegate;
 import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewChooser;
+import cherry.android.recycler.ViewConverter;
 import cherry.android.recycler.ViewHolder;
 import cherry.android.recycler.wrapper.HeaderAndFooterWrapper;
 
@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         };
         mAdapter = new RecyclerAdapter();
         mAdapter.addDelegate(String.class).bindDelegate(new ItemViewDelegate1(), new ItemViewDelegate2())
-                .to(new ViewChooser<String>() {
+                .to(new ViewConverter<String>() {
                     @Override
-                    public Class<? extends ItemViewDelegate<String, ? extends RecyclerView.ViewHolder>> choose(String s, int position) {
+                    public Class<? extends ItemViewDelegate<String, ? extends RecyclerView.ViewHolder>> convert(String s, int position) {
                         return position % 2 == 0 ? ItemViewDelegate1.class : ItemViewDelegate2.class;
                     }
                 });

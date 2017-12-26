@@ -15,10 +15,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/6/6.
  */
-
 public abstract class CommonAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerAdapter {
-
-    private Constructor<VH> constructor;
 
     public CommonAdapter(List<T> data, @LayoutRes int itemLayoutId) {
         super(data);

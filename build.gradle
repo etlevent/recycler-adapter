@@ -2,19 +2,21 @@
 
 buildscript {
     repositories {
+        apply from: 'versions.gradle'
+        google()
         jcenter()
         mavenCentral()
         //本地Maven仓库地址
         maven {
-            url uri('F:/Android/repos')
+            url uri(config.localRepos)
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        //自动化jcenter打包插件
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         //自动化maven打包插件
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        //自动上传至Bintray平台插件
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2"
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -22,11 +24,12 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         jcenter()
         mavenCentral()
         //本地Maven仓库地址
         maven {
-            url uri('F:/Android/repos')
+            url uri(config.localRepos)
         }
     }
 }

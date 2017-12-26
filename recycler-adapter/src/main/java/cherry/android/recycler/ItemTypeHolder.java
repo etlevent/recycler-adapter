@@ -9,16 +9,17 @@ import android.support.v7.widget.RecyclerView;
  * Created by Administrator on 2017/6/19.
  */
 
-/*public*/ class ItemTypeHolder<T> {
+/*package-private*/ class ItemTypeHolder<T> {
     private final Class<? extends T> itemTypeClass;
     private final SparseArrayCompat<ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
-    private ViewChooser<T> chooser;
+    private ViewConverter<T> converter;
 
+    @SafeVarargs
     ItemTypeHolder(@NonNull Class<? extends T> itemTypeClass,
-                   @Nullable ViewChooser<T> chooser,
+                   @Nullable ViewConverter<T> converter,
                    @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
         this.itemTypeClass = itemTypeClass;
-        this.chooser = chooser;
+        this.converter = converter;
         for (ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
             this.delegates.put(this.delegates.size(), delegate);
         }
@@ -32,10 +33,10 @@ import android.support.v7.widget.RecyclerView;
 
     @SuppressWarnings("unchecked")
     ItemViewDelegate getItemViewDelegate(@NonNull Object item, int position) {
-        if (this.chooser == null) {
+        if (this.converter == null) {
             return delegates.get(0);
         }
-        Class itemViewClass = this.chooser.choose((T) item, position);
+        Class itemViewClass = this.converter.convert((T) item, position);
         for (int i = 0; i < delegates.size(); i++) {
             ItemViewDelegate delegate = delegates.get(i);
             if (delegate.getClass().equals(itemViewClass)) {

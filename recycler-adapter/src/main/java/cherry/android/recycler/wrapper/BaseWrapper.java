@@ -13,13 +13,13 @@ import java.util.List;
  * Created by Administrator on 2017/6/16.
  */
 
-public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+/*package-private*/ abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final RecyclerView.Adapter mInnerAdapter;
     private final List<Integer> mWrapperViewTypeList;
     private int mLastRealCount;
     private boolean mIsDataChanged;
 
-    public BaseWrapper(@NonNull RecyclerView.Adapter adapter) {
+    BaseWrapper(@NonNull RecyclerView.Adapter adapter) {
         mInnerAdapter = adapter;
         mWrapperViewTypeList = new ArrayList<>();
         adapter.registerAdapterDataObserver(mDataObserver);
@@ -93,7 +93,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    protected int getRealItemCount() {
+    int getRealItemCount() {
         return mInnerAdapter.getItemCount();
     }
 
@@ -113,11 +113,11 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
 
     abstract RecyclerView.ViewHolder onCreateWrapperViewHolder(ViewGroup parent, int viewType);
 
-    protected boolean isDataCountChanged() {
+    boolean isDataCountChanged() {
         return mIsDataChanged;
     }
 
-    protected void notifyItemCountChanged() {
+    void notifyItemCountChanged() {
         mIsDataChanged = mLastRealCount != getRealItemCount();
         mLastRealCount = getRealItemCount();
     }

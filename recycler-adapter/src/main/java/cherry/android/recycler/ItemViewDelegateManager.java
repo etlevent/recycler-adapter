@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by Administrator on 2017/6/19.
  */
 
-/*public*/ class ItemViewDelegateManager {
+/*package-private*/ class ItemViewDelegateManager {
     private final SparseArrayCompat<ItemViewDelegate<?, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>();
     private final ArrayMap<Class<?>, ItemTypeHolder<?>> typeMap = new ArrayMap<>();
 
@@ -44,20 +44,20 @@ import java.util.Map;
      * 添加Class - items映射, 一对多映射关系
      *
      * @param clazz
-     * @param chooser
+     * @param converter
      * @param delegates
      * @param <T>
      */
     @SuppressWarnings("unchecked")
     protected <T> void addDelegate(@NonNull Class<? extends T> clazz,
-                                   @NonNull ViewChooser<T> chooser,
+                                   @NonNull ViewConverter<T> converter,
                                    @NonNull ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>... delegates) {
         if (delegates == null || clazz == null)
             throw new NullPointerException("class or delegates should not be NULL!");
         for (ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
             this.delegates.put(this.delegates.size(), delegate);
         }
-        typeMap.put(clazz, new ItemTypeHolder(clazz, chooser, delegates));
+        typeMap.put(clazz, new ItemTypeHolder(clazz, converter, delegates));
     }
 
     public int getDelegateCount() {

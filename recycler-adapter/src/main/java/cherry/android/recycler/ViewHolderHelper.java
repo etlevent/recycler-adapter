@@ -39,7 +39,7 @@ import java.util.Map;
 
     private static <T extends RecyclerView.ViewHolder> Constructor<T> createConstructor(Class<T> clazz) {
         try {
-            return (Constructor) clazz.getConstructor(View.class);
+            return clazz.getConstructor(View.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("can't get construct in class: " + clazz + "(View itemView)", e);
         }
