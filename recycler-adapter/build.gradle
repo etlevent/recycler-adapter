@@ -27,14 +27,14 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
 }
-ext {
-    javadocExclude = []
+//ext {
+//    javadocExclude = []
 //    javadocExclude.add('**/R.java')
-    javadocExclude.add('**/Build.java')
-}
+//    javadocExclude.add('**/BuildConfig.java')
+//}
+group = config.versions.group
+version = config.versions.version
 apply from: '../maven.gradle'
 apply from: '../bintray.gradle'
 
-group = config.versions.group
-version = config.versions.version
 

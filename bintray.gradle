@@ -18,7 +18,7 @@ if (!isJava) {
             task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
                 source = variant.javaCompile.source
                 classpath = files(variant.javaCompile.classpath.files)
-//                exclude '**/BuildConfig.java'
+                exclude '**/BuildConfig.java'
 //                exclude '**/R.java'
                 if (!excludeJavadoc().isEmpty())
                     exclude excludeJavadoc()
