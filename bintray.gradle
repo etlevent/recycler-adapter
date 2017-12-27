@@ -19,9 +19,7 @@ if (!isJava) {
                 source = variant.javaCompile.source
                 classpath = files(variant.javaCompile.classpath.files)
                 exclude '**/BuildConfig.java'
-//                exclude '**/R.java'
-                if (!excludeJavadoc().isEmpty())
-                    exclude excludeJavadoc()
+                exclude '**/R.java'
             }
             task("javadoc${variant.name.capitalize()}Jar", type: Jar, dependsOn: "generate${variant.name.capitalize()}Javadoc") {
                 classifier = 'javadoc'
@@ -65,14 +63,6 @@ def getArtifactId() {
     def artifactId = selfConfig ? project.artifactId : project.name
     println "project artifactId now is ${artifactId}. Use ext {artifactId = xxx} to customizing."
     return artifactId
-}
-
-def excludeJavadoc() {
-    if (project.hasProperty('javadocExclude')) {
-        println "javadocExclude=${project.javadocExclude}"
-        return project.javadocExclude
-    }
-    return Collections.emptyList()
 }
 
 install {
@@ -139,3 +129,32 @@ bintray {
 }
 
 println("project.name=${project.name}")
+//def excludeJavadoc() {
+//    if (project.hasProperty('javadocExclude')) {
+//        println "javadocExclude=${project.javadocExclude}"
+//        return project.javadocExclude
+//    }
+//    return Collections.emptyList()
+//}
+//
+//def getPackageName(variant) {
+//    def classpath = variant.applicationId
+//    if (variant.buildType.applicationIdSuffix) {
+//        classpath -= "${variant.buildType.applicationIdSuffix}"
+//    }
+//    return classpath
+//}
+//def packageName = getPackageName(variant)
+//println "packageName=${getPackageName(variant)}"
+//
+//def excludes = []
+//def projectPath = projectDir.absolutePath.replace(File.separator, '')
+//def packageNameNonSep = packageName.replace('.', '')
+//source.each { File file ->
+//    def absolutePath = file.absolutePath.replace(File.separator, '')
+//    def innerPath = absolutePath.replaceAll(projectPath, "")
+//    if (innerPath.contains('R.java') && !innerPath.contains(packageNameNonSep)) {
+//        println "${file.absolutePath}"
+//        excludes += file.absolutePath
+//    }
+//}
