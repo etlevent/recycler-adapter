@@ -17,6 +17,8 @@ if (!isJava) {
         if (variant.name == 'release') { //我们只需 release 的 javadoc
             task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
                 source = variant.javaCompile.source
+                if (!javadocSource().isEmpty())
+                    source javadocSource()
                 classpath = files(variant.javaCompile.classpath.files)
                 exclude '**/BuildConfig.java'
                 exclude '**/R.java'
@@ -63,6 +65,14 @@ def getArtifactId() {
     def artifactId = selfConfig ? project.artifactId : project.name
     println "project artifactId now is ${artifactId}. Use ext {artifactId = xxx} to customizing."
     return artifactId
+}
+
+def javadocSource() {
+    if (project.hasProperty('javadocSource')) {
+        println "javadocSource=${project.javadocSource}"
+        return project.javadocSource
+    }
+    return Collections.emptyList()
 }
 
 install {
@@ -120,10 +130,10 @@ bintray {
         publish = true //[Default: false] Whether version should be auto published after an upload
 
         version {
-            name = config.versions.version
-            desc = "release ${this.version}"
+            name = project.version?:config.versions.version
+            desc = "release ${project.version?:config.versions.version}"
             released = new Date()
-            vcsTag = config.versions.version
+            vcsTag = project.version?:config.versions.version
         }
     }
 }
