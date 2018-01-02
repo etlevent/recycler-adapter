@@ -6,7 +6,7 @@ def git = 'https://github.com/LeonardoLaus'
 def desc = 'adapter for RecyclerView'
 
 def versions = [:]
-versions.group = 'cherry.android'
+versions.group = 'cherry.android.recyclerview'
 versions.version = '1.0.5'
 versions.desc = desc
 versions.siteUrl = "${git}/recycler-adapter"
