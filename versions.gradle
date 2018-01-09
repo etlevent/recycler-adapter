@@ -29,11 +29,17 @@ config.developer = developer
 def bintray = [:]
 bintray.user = getLocalProperties().getProperty('bintray.user')
 bintray.apikey = getLocalProperties().getProperty('bintray.apikey')
-assert bintray.user != null
-assert bintray.apikey != null
 config.bintray = bintray
 
-config.localRepos = 'E:/liuhao/Android/repos'
+def maven = [:]
+def nexusContent = 'http://192.168.39.102:8081/nexus/content'
+maven.userName = getLocalProperties().getProperty('maven.userName')
+maven.password = getLocalProperties().getProperty('maven.password')
+maven.releasesUrl = "${nexusContent}/repositories/releases"
+maven.snapshotsUrl = "${nexusContent}/repositories/snapshots"
+maven.fileRepos = uri('E:/liuhao/Android/repos')
+maven.publicUrl = "${nexusContent}/groups/public"
+config.maven = maven
 
 ext.config = config
 

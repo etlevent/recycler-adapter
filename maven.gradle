@@ -8,10 +8,46 @@ if (isJava) {
 uploadArchives {
     repositories {
         mavenDeployer {
+            if (project.hasProperty('SNAPSHOTS') && !project.version.endsWith('SNAPSHOT')) {
+                project.version = "${project.version}-SNAPSHOT"
+                println "snapshots version=${project.version}"
+            }
+
             pom.version = project.version
             pom.groupId = project.group
             pom.artifactId = artifactId
-            repository(url: uri(config.localRepos))
+            pom.project {
+                licenses {
+                    license {
+                        name config.license.name
+                        url config.license.url
+                    }
+                }
+                developers {
+                    developer {
+                        id config.developer.id
+                        name config.developer.name
+                        email config.developer.email
+                    }
+                }
+            }
+
+            def userName = project.hasProperty('USERNAME') ? project.USERNAME : config.maven.userName
+            def password = project.hasProperty('PASSWORD') ? project.PASSWORD : config.maven.password
+            assert userName != null
+            assert password != null
+            // fileRepos
+            if (project.hasProperty('FILE_REPOS')) {
+                repository(url: config.maven.fileRepos)
+            }
+            // releases
+            repository(url: config.maven.releasesUrl) {
+                authentication(userName: userName, password: password)
+            }
+            // snapshot
+            snapshotRepository(url: config.maven.snapshotsUrl) {
+                authentication(userName: userName, password: password)
+            }
         }
     }
 }

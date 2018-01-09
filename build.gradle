@@ -8,7 +8,10 @@ buildscript {
         mavenCentral()
         //本地Maven仓库地址
         maven {
-            url uri(config.localRepos)
+            url config.maven.fileRepos
+        }
+        maven {
+            url config.maven.publicUrl
         }
     }
     dependencies {
@@ -29,7 +32,10 @@ allprojects {
         mavenCentral()
         //本地Maven仓库地址
         maven {
-            url uri(config.localRepos)
+            url config.maven.fileRepos
+        }
+        maven {
+            url config.maven.publicUrl
         }
     }
 }

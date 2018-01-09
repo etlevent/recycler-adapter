@@ -24,6 +24,7 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
     }
 
     @NonNull
+    @Override
     public final VH createViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
         View itemView = inflater.inflate(this.mLayoutId, parent, false);
         return createViewHolder(itemView);

@@ -48,7 +48,6 @@ public class OverlayCardLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        //super.onLayoutChildren(recycler, state);
         Log.e(TAG, "recycler=[" + recycler + "], state=[" + state + "]");
         detachAndScrapAttachedViews(recycler);
         final int itemCount = getItemCount();

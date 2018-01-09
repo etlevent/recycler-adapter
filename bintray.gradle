@@ -77,32 +77,30 @@ def javadocSource() {
 
 install {
     repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
+        pom.project {
+            packaging 'aar'
 
-                name artifactId
+            name artifactId
+            url config.versions.siteUrl
+
+            licenses {
+                license {
+                    name config.license.name
+                    url config.license.url
+                }
+            }
+
+            developers {
+                developer {
+                    id config.developer.id
+                    name config.developer.name
+                    email config.developer.email
+                }
+            }
+            scm {
+                connection config.versions.gitUrl
+                developerConnection config.versions.gitUrl
                 url config.versions.siteUrl
-
-                licenses {
-                    license {
-                        name config.license.name
-                        url config.license.url
-                    }
-                }
-
-                developers {
-                    developer {
-                        id config.developer.id
-                        name config.developer.name
-                        email config.developer.email
-                    }
-                }
-                scm {
-                    connection config.versions.gitUrl
-                    developerConnection config.versions.gitUrl
-                    url config.versions.siteUrl
-                }
             }
         }
     }
@@ -110,6 +108,9 @@ install {
 bintray {
     user = config.bintray.user
     key = config.bintray.apikey
+    assert user != null
+    assert key != null
+
     configurations = ['archives']
 
     override = true //[Default: false] Whether to override version artifacts already published
@@ -130,10 +131,10 @@ bintray {
         publish = true //[Default: false] Whether version should be auto published after an upload
 
         version {
-            name = project.version?:config.versions.version
-            desc = "release ${project.version?:config.versions.version}"
+            name = project.version ?: config.versions.version
+            desc = "release ${project.version ?: config.versions.version}"
             released = new Date()
-            vcsTag = project.version?:config.versions.version
+            vcsTag = project.version ?: config.versions.version
         }
     }
 }
