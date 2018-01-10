@@ -32,13 +32,14 @@ bintray.apikey = getLocalProperties().getProperty('bintray.apikey')
 config.bintray = bintray
 
 def maven = [:]
-def nexusContent = 'http://192.168.39.102:8081/nexus/content'
+def nexus = 'http://192.168.39.102:8081/nexus'
+def nexusContent = "${nexus}/content"
 maven.userName = getLocalProperties().getProperty('maven.userName')
 maven.password = getLocalProperties().getProperty('maven.password')
-maven.releasesUrl = "${nexusContent}/repositories/releases"
-maven.snapshotsUrl = "${nexusContent}/repositories/snapshots"
-maven.fileRepos = uri('E:/liuhao/Android/repos')
-maven.publicUrl = "${nexusContent}/groups/public"
+maven.nexusReleasesUrl = "${nexusContent}/repositories/releases"
+maven.nexusSnapshotsUrl = "${nexusContent}/repositories/snapshots"
+maven.localRepos = uri('E:/liuhao/Android/repos')
+maven.nexusPublicUrl = "${nexusContent}/groups/public"
 config.maven = maven
 
 ext.config = config
@@ -48,3 +49,26 @@ def getLocalProperties() {
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     return properties
 }
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.mavenCentral()
+    handler.maven { url config.maven.nexusPublicUrl }
+    handler.maven { url config.maven.localRepos }
+}
+
+def getArtifactId(Project project) {
+    def selfConfig = project.hasProperty('artifactId')
+    def artifactId = selfConfig ? project.artifactId : project.name
+    println "project artifactId now is ${artifactId}. Use ext {artifactId = xxx} to customizing."
+    return artifactId
+}
+
+def isAndroidLibrary(Project project) {
+    return project.plugins.hasPlugin('com.android.library')
+}
+
+ext.addRepos = this.&addRepos
+ext.getArtifactId = this.&getArtifactId
+ext.isAndroidLibrary = this.&isAndroidLibrary
