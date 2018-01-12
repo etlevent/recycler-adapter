@@ -42,14 +42,15 @@ uploadArchives {
             // localRepos
             if (project.hasProperty('LOCAL_REPOS')) {
                 repository(url: config.maven.localRepos)
-            }
-            // releases
-            repository(url: config.maven.nexusReleasesUrl) {
-                authentication(userName: userName, password: password)
-            }
-            // snapshot
-            snapshotRepository(url: config.maven.nexusSnapshotsUrl) {
-                authentication(userName: userName, password: password)
+            } else {
+                // releases
+                repository(url: config.maven.nexusReleasesUrl) {
+                    authentication(userName: userName, password: password)
+                }
+                // snapshot
+                snapshotRepository(url: config.maven.nexusSnapshotsUrl) {
+                    authentication(userName: userName, password: password)
+                }
             }
         }
     }
