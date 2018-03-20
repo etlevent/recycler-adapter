@@ -34,8 +34,9 @@ import java.util.Map;
     @SuppressWarnings("unchecked")
     public <T, VH extends RecyclerView.ViewHolder> void addDelegate(@NonNull Class<? extends T> clazz,
                                                                     @NonNull ItemViewDelegate<T, VH> delegate) {
-        if (delegate == null || clazz == null)
+        if (delegate == null || clazz == null) {
             throw new NullPointerException("class or delegate should not be NULL!");
+        }
         delegates.put(delegates.size(), delegate);
         typeMap.put(clazz, new ItemTypeHolder(clazz, delegate));
     }
@@ -52,8 +53,9 @@ import java.util.Map;
     protected <T> void addDelegate(@NonNull Class<? extends T> clazz,
                                    @NonNull ViewConverter<T> converter,
                                    @NonNull ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>... delegates) {
-        if (delegates == null || clazz == null)
+        if (delegates == null || clazz == null) {
             throw new NullPointerException("class or delegates should not be NULL!");
+        }
         for (ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
             this.delegates.put(this.delegates.size(), delegate);
         }
@@ -88,7 +90,7 @@ import java.util.Map;
             }
         }
         StringBuilder builder = new StringBuilder();
-        builder.append("cannot get A itemType with item: [")
+        builder.append("cannot get itemType with item: [")
                 .append(item)
                 .append("], position=[")
                 .append(position)

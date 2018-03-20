@@ -2,6 +2,8 @@ package cherry.android.recycler.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import cherry.android.recycler.BaseItemViewDelegate;
 import cherry.android.recycler.CommonAdapter;
@@ -20,18 +23,26 @@ import cherry.android.recycler.ItemViewDelegate;
 import cherry.android.recycler.RecyclerAdapter;
 import cherry.android.recycler.ViewConverter;
 import cherry.android.recycler.ViewHolder;
+import cherry.android.recycler.diff.DiffCapable;
 import cherry.android.recycler.wrapper.HeaderAndFooterWrapper;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerAdapter mAdapter;
     private HeaderAndFooterWrapper mWrapper;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mAdapter.setItems((List<?>) msg.obj);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         mAdapter = new CommonAdapter<String, ViewHolder>(android.R.layout.activity_list_item) {
 
             @Override
@@ -48,11 +59,16 @@ public class MainActivity extends AppCompatActivity {
                         return position % 2 == 0 ? ItemViewDelegate1.class : ItemViewDelegate2.class;
                     }
                 });
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            list.add("item:" + i);
-        }
-        mAdapter.setItems(list);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> list = new ArrayList<>();
+                for (int i = 0; i < 500000L; i++) {
+                    list.add("item:" + i);
+                }
+                mHandler.obtainMessage(0, list).sendToTarget();
+            }
+        }).start();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mWrapper = new HeaderAndFooterWrapper(mAdapter);
         mWrapper.addHeaderView(LayoutInflater.from(this).inflate(android.R.layout.simple_list_item_1, recyclerView, false));
@@ -62,6 +78,27 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position) {
                 Log.d("Test", "position = " + position);
                 startActivity(new Intent(MainActivity.this, SecondActivity.class));
+            }
+        });
+        final Random random = new Random();
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List list = new ArrayList(mAdapter.getItems());
+                int index = random.nextInt(list.size());
+                list.add(0, "add " + index);
+                Log.i("Test", "add " + index);
+                mAdapter.setItems(list, new DiffCapable<String>() {
+                    @Override
+                    public boolean isSame(int diff, Object oldItem, Object newItem) {
+                        return oldItem.equals(newItem);
+                    }
+
+                    @Override
+                    public String payloads(Object oldItem, Object newItem) {
+                        return null;
+                    }
+                });
             }
         });
     }
@@ -74,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void convert(@NonNull ViewHolder holder, String s, int position) {
             TextView textView = holder.findView(android.R.id.text1);
-            textView.setText("item1 position = " + position);
+            textView.setText("item1 position = " + position + ", s=" + s);
         }
     }
 
@@ -89,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             TextView tv = holder.findView(android.R.id.text1);
             tv.setText("item2");
             tv = holder.findView(android.R.id.text2);
-            tv.setText("position=" + position);
+            tv.setText("position=" + position + ", s=" + s);
         }
     }
 }

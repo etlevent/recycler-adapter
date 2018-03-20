@@ -71,8 +71,9 @@ import java.util.List;
                     if (isWrapperViewPosition(position)) {
                         return gridLayoutManager.getSpanCount();
                     }
-                    if (spanSizeLookup != null)
+                    if (spanSizeLookup != null) {
                         return spanSizeLookup.getSpanSize(position);
+                    }
                     return 1;
                 }
             });
