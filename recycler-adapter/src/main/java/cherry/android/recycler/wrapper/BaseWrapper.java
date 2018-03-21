@@ -59,6 +59,15 @@ import java.util.List;
     }
 
     @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+        if (isWrapperViewPosition(position)) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            mInnerAdapter.onBindViewHolder(holder, position - getWrapperTopCount(), payloads);
+        }
+    }
+
+    @Override
     public final void onAttachedToRecyclerView(RecyclerView recyclerView) {
         mInnerAdapter.onAttachedToRecyclerView(recyclerView);
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -132,31 +141,31 @@ import java.util.List;
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
-            notifyItemRangeChanged(positionStart, itemCount);
+            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount);
             notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-            notifyItemRangeChanged(positionStart, itemCount, payload);
+            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount, payload);
             notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            notifyItemRangeInserted(positionStart, itemCount);
+            notifyItemRangeInserted(positionStart + getWrapperTopCount(), itemCount);
             notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            notifyItemRangeRemoved(positionStart, itemCount);
+            notifyItemRangeRemoved(positionStart + getWrapperTopCount(), itemCount);
             notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-            notifyItemMoved(fromPosition, toPosition);
+            notifyItemMoved(fromPosition + getWrapperTopCount(), toPosition + getWrapperTopCount());
             notifyItemCountChanged();
         }
     };
