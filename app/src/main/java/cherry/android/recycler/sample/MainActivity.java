@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 List<String> list = new ArrayList<>();
-                for (int i = 0; i < 500000L; i++) {
+                for (int i = 0; i < 100000L; i++) {
                     list.add("item:" + i);
                 }
                 mHandler.obtainMessage(0, list).sendToTarget();

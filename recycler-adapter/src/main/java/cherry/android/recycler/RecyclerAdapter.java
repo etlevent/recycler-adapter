@@ -39,12 +39,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private OnItemClickListener mItemClickListener;
     private OnItemLongClickListener mItemLongClickListener;
 
+    private boolean mAttached;
     private ThreadPoolExecutor mExecutor;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == MSG_DIFF_RESULT) {
+            if (msg.what == MSG_DIFF_RESULT && mAttached) {
                 final DiffUtil.DiffResult result = (DiffUtil.DiffResult) msg.obj;
                 if (result != null) {
                     result.dispatchUpdatesTo(RecyclerAdapter.this);
@@ -153,13 +154,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.v(TAG, "onAttachedToRecyclerView");
+        mAttached = true;
+    }
+
+    @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
+        Log.v(TAG, "onDetachedFromRecyclerView");
+        mAttached = false;
         mHandler.removeCallbacksAndMessages(null);
-        if (mExecutor != null && !mExecutor.isShutdown()) {
-            mExecutor.shutdown();
-        }
-        mExecutor = null;
+        closeExecutor();
     }
 
     @Nullable
@@ -200,6 +207,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
         return true;
+    }
+
+    private void closeExecutor() {
+        if (mExecutor == null || mExecutor.isShutdown()) {
+            return;
+        }
+        mExecutor.shutdown();
+        try {
+            if (!mExecutor.awaitTermination(20, TimeUnit.SECONDS)) {
+                mExecutor.shutdown();
+                if (mExecutor.awaitTermination(20, TimeUnit.SECONDS)) {
+                    Log.e(TAG, "executor not terminate");
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            mExecutor.shutdownNow();
+        }
+        mExecutor = null;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
