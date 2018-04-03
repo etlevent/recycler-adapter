@@ -60,7 +60,7 @@ public class LoadMoreWrapper extends BaseWrapper {
 
     @Override
     boolean isWrapperViewPosition(int position) {
-        return hasLoadMore() && position >= getRealItemCount() && position > 0;
+        return hasLoadMore() && position >= getRealItemCount();
     }
 
     @Override
