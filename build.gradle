@@ -4,7 +4,7 @@ buildscript {
     apply from: 'versions.gradle'
     addRepos(repositories)
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         //自动化jcenter打包插件
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         //自动化maven打包插件
@@ -20,4 +20,27 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+subprojects {
+    project.afterEvaluate {
+        task cleanNexus() {
+            if (project.hasProperty('LOCAL_REPOS') || !project.hasProperty('SNAPSHOTS')) {
+                println "project \'${project.name}\' not deploy snapshot version to remote maven. Skip clean."
+                return
+            }
+            if (!project.hasProperty('MAVEN_NEXUS_IP')) {
+                println 'project should rm nexus snapshots file. but cannot get Nexus ip!'
+                return
+            }
+            doLast {
+                def sep = File.separator
+                def filePath = "${String.join(sep, project.group.split('\\.'))}${sep}${getArtifactId(project)}"
+                exec {
+                    executable = 'ssh'
+                    args = ['-t', "root@${MAVEN_NEXUS_IP}", "rm -rf /opt/sonatype-work/nexus/storage/snapshots/${filePath}"]
+                }
+                println "deploy snapshot version. remove old package!"
+            }
+        }
+    }
 }

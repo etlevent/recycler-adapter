@@ -55,6 +55,7 @@ uploadArchives {
         }
     }
 }
+uploadArchives.dependsOn('cleanNexus')
 //为所有的jar包做数字签名
 //gpg签名需要签名文件
 signing {

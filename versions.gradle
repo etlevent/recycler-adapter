@@ -38,7 +38,7 @@ maven.userName = getLocalProperties().getProperty('maven.userName')
 maven.password = getLocalProperties().getProperty('maven.password')
 maven.nexusReleasesUrl = "${nexusContent}/repositories/releases"
 maven.nexusSnapshotsUrl = "${nexusContent}/repositories/snapshots"
-maven.localRepos = uri('E:/liuhao/Android/repos')
+maven.localRepos = getLocalProperties().getProperty('maven.local')
 maven.nexusPublicUrl = "${nexusContent}/groups/public"
 config.maven = maven
 
@@ -46,7 +46,10 @@ ext.config = config
 
 def getLocalProperties() {
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def file = project.rootProject.file('local.properties')
+    if (file.exists()) {
+        properties.load(file.newDataInputStream())
+    }
     return properties
 }
 
@@ -54,8 +57,12 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
     handler.mavenCentral()
+    if (config.maven.localRepos) {
+        handler.maven { url uri(config.maven.localRepos) }
+    } else {
+        println 'you can use local repos with maven.local=xxx in local.properties.'
+    }
     handler.maven { url config.maven.nexusPublicUrl }
-    handler.maven { url config.maven.localRepos }
 }
 
 def getArtifactId(Project project) {
