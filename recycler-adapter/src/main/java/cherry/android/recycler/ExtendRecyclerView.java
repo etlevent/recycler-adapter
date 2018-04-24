@@ -13,6 +13,25 @@ import android.view.View;
 public class ExtendRecyclerView extends RecyclerView {
 
     private View mEmptyView;
+    private final AdapterDataObserver mObserver = new AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            checkIfEmpty();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            super.onItemRangeChanged(positionStart, itemCount);
+            checkIfEmpty();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            super.onItemRangeRemoved(positionStart, itemCount);
+            checkIfEmpty();
+        }
+    };
 
     public ExtendRecyclerView(Context context) {
         super(context);
@@ -48,25 +67,5 @@ public class ExtendRecyclerView extends RecyclerView {
             setVisibility(isEmpty ? GONE : VISIBLE);
         }
     }
-
-    private final AdapterDataObserver mObserver = new AdapterDataObserver() {
-        @Override
-        public void onChanged() {
-            super.onChanged();
-            checkIfEmpty();
-        }
-
-        @Override
-        public void onItemRangeChanged(int positionStart, int itemCount) {
-            super.onItemRangeChanged(positionStart, itemCount);
-            checkIfEmpty();
-        }
-
-        @Override
-        public void onItemRangeRemoved(int positionStart, int itemCount) {
-            super.onItemRangeRemoved(positionStart, itemCount);
-            checkIfEmpty();
-        }
-    };
 
 }

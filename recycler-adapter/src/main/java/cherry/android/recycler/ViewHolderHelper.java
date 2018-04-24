@@ -12,12 +12,12 @@ import java.util.Map;
  */
 
 /*package-private*/ final class ViewHolderHelper {
+    private static final Map<Class<? extends RecyclerView.ViewHolder>,
+            Constructor<? extends RecyclerView.ViewHolder>> CONSTRUCTOR_MAP = new ArrayMap<>();
+
     private ViewHolderHelper() {
         throw new AssertionError("no instance.");
     }
-
-    private static final Map<Class<? extends RecyclerView.ViewHolder>,
-            Constructor<? extends RecyclerView.ViewHolder>> CONSTRUCTOR_MAP = new ArrayMap<>();
 
     public static <T extends RecyclerView.ViewHolder> T createViewHolder(Class<T> holder, View itemView) {
         Constructor<? extends RecyclerView.ViewHolder> constructor = CONSTRUCTOR_MAP.get(holder);

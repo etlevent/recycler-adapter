@@ -18,25 +18,10 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
 
     @LayoutRes
     private final int mLayoutId;
+    private Class<VH> mHolderClass;
 
     public BaseItemViewDelegate(@LayoutRes int layoutId) {
         this.mLayoutId = layoutId;
-    }
-
-    @NonNull
-    @Override
-    public final VH createViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
-        View itemView = inflater.inflate(this.mLayoutId, parent, false);
-        return createViewHolder(itemView);
-    }
-
-    private Class<VH> mHolderClass;
-
-    private VH createViewHolder(View itemView) {
-        if (mHolderClass == null) {
-            mHolderClass = findHolderClass(getClass());
-        }
-        return ViewHolderHelper.createViewHolder(mHolderClass, itemView);
     }
 
     private static <H> Class<H> findHolderClass(Class clazz) {
@@ -61,5 +46,19 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
             throw new IllegalArgumentException("cannot find Holder CLASS");
         }
         return findHolderClass(superClass);
+    }
+
+    @NonNull
+    @Override
+    public final VH createViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
+        View itemView = inflater.inflate(this.mLayoutId, parent, false);
+        return createViewHolder(itemView);
+    }
+
+    private VH createViewHolder(View itemView) {
+        if (mHolderClass == null) {
+            mHolderClass = findHolderClass(getClass());
+        }
+        return ViewHolderHelper.createViewHolder(mHolderClass, itemView);
     }
 }

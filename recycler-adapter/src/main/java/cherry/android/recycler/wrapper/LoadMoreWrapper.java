@@ -20,25 +20,17 @@ import cherry.android.recycler.ViewHolder;
  */
 
 public class LoadMoreWrapper extends BaseWrapper {
-    private static final int ITEM_TYPE_LOAD_MORE = Integer.MAX_VALUE - 2;
     public static final int STATE_HIDE = 0;
     public static final int STATE_LOADING_MORE = 1;
     public static final int STATE_NO_MORE = 2;
     public static final int STATE_LOADING_FAIL = 3;
-
-    @IntDef({STATE_HIDE, STATE_LOADING_MORE, STATE_NO_MORE, STATE_LOADING_FAIL})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface State {
-    }
-
+    private static final int ITEM_TYPE_LOAD_MORE = Integer.MAX_VALUE - 2;
     private View mLoadMoreView;
     @LayoutRes
     private int mLoadMoreLayoutId;
-
     @State
     private int mState = STATE_HIDE;
     private OnLoadMoreListener mLoadMoreListener;
-
     public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter, @NonNull View loadMoreView) {
         super(adapter);
         mLoadMoreView = loadMoreView;
@@ -136,6 +128,11 @@ public class LoadMoreWrapper extends BaseWrapper {
 
     public void setState(@State int state) {
         mState = state;
+    }
+
+    @IntDef({STATE_HIDE, STATE_LOADING_MORE, STATE_NO_MORE, STATE_LOADING_FAIL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface State {
     }
 
     public interface OnLoadMoreListener {

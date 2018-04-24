@@ -19,10 +19,8 @@ public class OverlayCardLayoutManager extends RecyclerView.LayoutManager {
     private static final int MAX_SHOW_COUNT = 4;
     private static final float SCALE_GAP = 0.1f;
     private static final float Y_GAP = 40;
-
-    private RecyclerView mRecyclerView;
     private final ItemTouchHelper mItemTouchHelper;
-
+    private RecyclerView mRecyclerView;
     private List mItems;
 
     public OverlayCardLayoutManager(List items) {

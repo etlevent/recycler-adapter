@@ -4,7 +4,7 @@ buildscript {
     apply from: 'versions.gradle'
     addRepos(repositories)
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath 'com.android.tools.build:gradle:3.1.2'
         //自动化jcenter打包插件
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         //自动化maven打包插件
@@ -34,7 +34,7 @@ subprojects {
             }
             doLast {
                 def sep = File.separator
-                def filePath = "${String.join(sep, project.group.split('\\.'))}${sep}${getArtifactId(project)}"
+                def filePath = "${String.join(sep, project.group.split('\\.'))}${sep}${getArtifactId(project)}${sep}${project.version}"
                 exec {
                     executable = 'ssh'
                     args = ['-t', "root@${MAVEN_NEXUS_IP}", "rm -rf /opt/sonatype-work/nexus/storage/snapshots/${filePath}"]

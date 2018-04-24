@@ -18,6 +18,43 @@ import java.util.List;
     private final List<Integer> mWrapperViewTypeList;
     private int mLastRealCount;
     private boolean mIsDataChanged;
+    private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            notifyDataSetChanged();
+            notifyItemCountChanged();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount);
+            notifyItemCountChanged();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount, payload);
+            notifyItemCountChanged();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            notifyItemRangeInserted(positionStart + getWrapperTopCount(), itemCount);
+            notifyItemCountChanged();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            notifyItemRangeRemoved(positionStart + getWrapperTopCount(), itemCount);
+            notifyItemCountChanged();
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            notifyItemMoved(fromPosition + getWrapperTopCount(), toPosition + getWrapperTopCount());
+            notifyItemCountChanged();
+        }
+    };
 
     BaseWrapper(@NonNull RecyclerView.Adapter adapter) {
         mInnerAdapter = adapter;
@@ -131,42 +168,4 @@ import java.util.List;
         mIsDataChanged = mLastRealCount != getRealItemCount();
         mLastRealCount = getRealItemCount();
     }
-
-    private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
-        @Override
-        public void onChanged() {
-            notifyDataSetChanged();
-            notifyItemCountChanged();
-        }
-
-        @Override
-        public void onItemRangeChanged(int positionStart, int itemCount) {
-            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
-        }
-
-        @Override
-        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-            notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount, payload);
-            notifyItemCountChanged();
-        }
-
-        @Override
-        public void onItemRangeInserted(int positionStart, int itemCount) {
-            notifyItemRangeInserted(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
-        }
-
-        @Override
-        public void onItemRangeRemoved(int positionStart, int itemCount) {
-            notifyItemRangeRemoved(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
-        }
-
-        @Override
-        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-            notifyItemMoved(fromPosition + getWrapperTopCount(), toPosition + getWrapperTopCount());
-            notifyItemCountChanged();
-        }
-    };
 }

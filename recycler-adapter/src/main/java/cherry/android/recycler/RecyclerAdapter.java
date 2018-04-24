@@ -30,10 +30,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final String TAG = "RecyclerAdapter";
 
     private static final int MSG_DIFF_RESULT = 0;
-
+    protected final ItemViewDelegateManager mDelegateManager;
     @NonNull
     protected List<?> mItems;
-    protected final ItemViewDelegateManager mDelegateManager;
     private LayoutInflater mInflater;
 
     private OnItemClickListener mItemClickListener;
@@ -61,6 +60,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public RecyclerAdapter() {
         mDelegateManager = ItemViewDelegateManager.get();
+    }
+
+    @NonNull
+    private static List<?> transferUnmodifiable(@Nullable List<?> items) {
+        if (items == null) {
+            items = Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(items);
     }
 
     @Override
@@ -298,13 +305,5 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return super.getChangePayload(oldItemPosition, newItemPosition);
         }
-    }
-
-    @NonNull
-    private static List<?> transferUnmodifiable(@Nullable List<?> items) {
-        if (items == null) {
-            items = Collections.EMPTY_LIST;
-        }
-        return Collections.unmodifiableList(items);
     }
 }
