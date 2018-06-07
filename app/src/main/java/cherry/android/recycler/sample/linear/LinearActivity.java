@@ -1,4 +1,4 @@
-package cherry.android.recycler.sample;
+package cherry.android.recycler.sample.linear;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,21 +14,20 @@ import java.util.List;
 import cherry.android.recycler.CommonAdapter;
 import cherry.android.recycler.RecyclerAdapter;
 import cherry.android.recycler.ViewHolder;
-import cherry.android.recycler.sample.linear.LinearActivity;
+import cherry.android.recycler.sample.RecyclerActivity;
 
-public class MainActivity extends RecyclerActivity {
-
+public class LinearActivity extends RecyclerActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(getDefaultItemDecoration());
-
-        final List<String> items = new ArrayList<>();
-        items.add("Linear");
-        items.add("Grid");
-        items.add("StaggeredGrid");
+        List<String> items = new ArrayList<>();
+        items.add("HORIZONTAL");
+        items.add("VERTICAL");
+        items.add("HORIZONTAL with Header and Footer");
+        items.add("VERTICAL with Header and Footer");
         RecyclerAdapter adapter = new CommonAdapter<String, ViewHolder>(items, android.R.layout.simple_list_item_1) {
+
             @Override
             protected void convert(ViewHolder holder, String s, int position) {
                 TextView textView = holder.findView(android.R.id.text1);
@@ -40,12 +39,18 @@ public class MainActivity extends RecyclerActivity {
             public void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position) {
                 switch (position) {
                     case 0:
-                        startActivity(new Intent(MainActivity.this, LinearActivity.class));
+                        startActivity(new Intent(LinearActivity.this, LinearHorizontalActivity.class));
+                        break;
+                    case 1:
+                        startActivity(new Intent(LinearActivity.this, LinearVerticalActivity.class));
+                        break;
+                    case 2:
+                        break;
+                    case 3:
                         break;
                 }
             }
         });
         mRecyclerView.setAdapter(adapter);
-
     }
 }

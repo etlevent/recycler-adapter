@@ -1,4 +1,4 @@
-package cherry.android.recycler.sample;
+package cherry.android.recycler.sample.linear;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,7 @@ import java.util.Random;
 import cherry.android.recycler.ItemViewDelegate;
 import cherry.android.recycler.RecyclerAdapter;
 import cherry.android.recycler.ViewConverter;
+import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.delegate.SimpleDelegate1;
 import cherry.android.recycler.sample.delegate.SimpleDelegate2;
 import cherry.android.recycler.sample.model.Foo;
@@ -32,8 +33,8 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        setContentView(R.layout.layout_recycler_view);
+        recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter();
         mAdapter.addDelegate(Foo.class)
