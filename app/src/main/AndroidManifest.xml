@@ -20,6 +20,7 @@
         <activity android:name=".linear.LinearActivity" />
         <activity android:name=".linear.LinearVerticalActivity" />
         <activity android:name=".linear.LinearHorizontalActivity" />
+        <activity android:name=".linear.LinearLoadingMoreActivity" />
         <activity android:name=".linear.SecondActivity" />
     </application>
 

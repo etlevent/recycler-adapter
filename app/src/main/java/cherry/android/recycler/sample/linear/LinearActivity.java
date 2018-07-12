@@ -26,6 +26,7 @@ public class LinearActivity extends RecyclerActivity {
         items.add("VERTICAL");
         items.add("HORIZONTAL with Header and Footer");
         items.add("VERTICAL with Header and Footer");
+        items.add("VERTICAL with Loading More");
         RecyclerAdapter adapter = new CommonAdapter<String, ViewHolder>(items, android.R.layout.simple_list_item_1) {
 
             @Override
@@ -47,6 +48,9 @@ public class LinearActivity extends RecyclerActivity {
                     case 2:
                         break;
                     case 3:
+                        break;
+                    case 4:
+                        startActivity(new Intent(LinearActivity.this, LinearLoadingMoreActivity.class));
                         break;
                 }
             }

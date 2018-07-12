@@ -1,5 +1,6 @@
 package cherry.android.recycler.wrapper;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,43 +17,36 @@ import java.util.List;
 /*package-private*/ abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final RecyclerView.Adapter mInnerAdapter;
     private final List<Integer> mWrapperViewTypeList;
-    private int mLastRealCount;
-    private boolean mIsDataChanged;
+    protected RecyclerView mAttachedRecyclerView;
     private final RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
             notifyDataSetChanged();
-            notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
             notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
             notifyItemRangeChanged(positionStart + getWrapperTopCount(), itemCount, payload);
-            notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
             notifyItemRangeInserted(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
             notifyItemRangeRemoved(positionStart + getWrapperTopCount(), itemCount);
-            notifyItemCountChanged();
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             notifyItemMoved(fromPosition + getWrapperTopCount(), toPosition + getWrapperTopCount());
-            notifyItemCountChanged();
         }
     };
 
@@ -104,9 +98,11 @@ import java.util.List;
         }
     }
 
+    @CallSuper
     @Override
-    public final void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         mInnerAdapter.onAttachedToRecyclerView(recyclerView);
+        mAttachedRecyclerView = recyclerView;
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
@@ -126,9 +122,15 @@ import java.util.List;
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public final void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mAttachedRecyclerView = null;
+    }
+
+    @CallSuper
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         mInnerAdapter.onViewAttachedToWindow(holder);
         int position = holder.getLayoutPosition();
         if (isWrapperViewPosition(position)) {
@@ -159,13 +161,4 @@ import java.util.List;
     abstract int getWrapperItemType(int position);
 
     abstract RecyclerView.ViewHolder onCreateWrapperViewHolder(ViewGroup parent, int viewType);
-
-    boolean isDataCountChanged() {
-        return mIsDataChanged;
-    }
-
-    void notifyItemCountChanged() {
-        mIsDataChanged = mLastRealCount != getRealItemCount();
-        mLastRealCount = getRealItemCount();
-    }
 }

@@ -3,7 +3,10 @@ package cherry.android.recycler.wrapper;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,38 +14,29 @@ import android.view.ViewGroup;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import cherry.android.recycler.R;
 import cherry.android.recycler.ViewHolder;
 
-
-/**
- * Created by Administrator on 2017/6/16.
- */
+import static cherry.android.recycler.wrapper.LoadMoreWrapper.State.HIDE;
+import static cherry.android.recycler.wrapper.LoadMoreWrapper.State.LOADING_FAIL;
+import static cherry.android.recycler.wrapper.LoadMoreWrapper.State.LOADING_MORE;
+import static cherry.android.recycler.wrapper.LoadMoreWrapper.State.NO_MORE;
 
 public class LoadMoreWrapper extends BaseWrapper {
-    public static final int STATE_HIDE = 0;
-    public static final int STATE_LOADING_MORE = 1;
-    public static final int STATE_NO_MORE = 2;
-    public static final int STATE_LOADING_FAIL = 3;
     private static final int ITEM_TYPE_LOAD_MORE = Integer.MAX_VALUE - 2;
-    private View mLoadMoreView;
     @LayoutRes
-    private int mLoadMoreLayoutId;
+    private int mLayoutId;
     @State
-    private int mState = STATE_HIDE;
+    private int mState;
     private OnLoadMoreListener mLoadMoreListener;
-    public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter, @NonNull View loadMoreView) {
+    private OnStateChangedListener mOnStateChangedListener;
+
+    public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter, @LayoutRes int layoutId) {
         super(adapter);
-        mLoadMoreView = loadMoreView;
+        this.mLayoutId = layoutId;
     }
 
-    public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter, @LayoutRes int loadMoreLayoutId) {
-        super(adapter);
-        mLoadMoreLayoutId = loadMoreLayoutId;
-    }
-
-    public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter) {
-        super(adapter);
+    private boolean hasLoadMore() {
+        return this.mLayoutId != 0;
     }
 
     @Override
@@ -57,44 +51,32 @@ public class LoadMoreWrapper extends BaseWrapper {
 
     @Override
     int getWrapperItemCount() {
-        return (hasLoadMore() ? 1 : 0);
+        return hasLoadMore() ? 1 : 0;
     }
 
     @Override
     void onBindWrapperViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final boolean hide = mState == STATE_HIDE;
-        if (hide) {
-            holder.itemView.setVisibility(View.GONE);
+        Log.d("Recycler", "onBindWrapperViewHolder " + position);
+        Log.e("Recycler", "onBindWrapperViewHolder lastVisiblePosition=" + findLastVisibleItemPosition() + ", itemCount=" + getItemCount());
+        if (findLastVisibleItemPosition() < position - 1) {
+            Log.w("Recycler", "return with state changed.");
             return;
         }
-        final boolean loadingMore = mState == STATE_LOADING_MORE;
-        final boolean loadingFail = mState == STATE_LOADING_FAIL;
-        final boolean noMore = mState == STATE_NO_MORE;
-        View noMoreView = null;
-        View loadingFailView = null;
-        if (holder.itemView instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) holder.itemView;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                View child = group.getChildAt(i);
-                if (child.getId() == R.id.no_more_view) {
-                    child.setVisibility(noMore ? View.VISIBLE : View.GONE);
-                    noMoreView = child;
-                } else if (child.getId() == R.id.loading_fail_view) {
-                    child.setVisibility(loadingFail ? View.VISIBLE : View.GONE);
-                    loadingFailView = child;
-                } else {
-                    child.setVisibility((noMore || loadingFail) ? View.GONE : View.VISIBLE);
-                }
-            }
+        if (mOnStateChangedListener != null) {
+            mOnStateChangedListener.onStateChanged(mState, (ViewHolder) holder);
         }
         if (mLoadMoreListener != null) {
-            if (loadingMore && isDataCountChanged()) {
+            if (mState == LOADING_MORE) {
                 mLoadMoreListener.onLoadMore();
-                notifyItemCountChanged();
-            } else if (noMore && noMoreView == null) {
-                mLoadMoreListener.onNoMore(holder.itemView);
-            } else if (loadingFail && loadingFailView == null) {
+                holder.itemView.setVisibility(View.VISIBLE);
+            } else if (mState == LOADING_FAIL) {
                 mLoadMoreListener.onLoadingFail(holder.itemView);
+                holder.itemView.setVisibility(View.VISIBLE);
+            } else if (mState == NO_MORE) {
+                mLoadMoreListener.onNoMore(holder.itemView);
+                holder.itemView.setVisibility(View.VISIBLE);
+            } else if (mState == HIDE) {
+                holder.itemView.setVisibility(View.GONE);
             }
         }
     }
@@ -106,33 +88,70 @@ public class LoadMoreWrapper extends BaseWrapper {
 
     @Override
     RecyclerView.ViewHolder onCreateWrapperViewHolder(ViewGroup parent, int viewType) {
-        if (mLoadMoreLayoutId != 0) {
-            mLoadMoreView = LayoutInflater.from(parent.getContext()).inflate(mLoadMoreLayoutId, parent, false);
-        }
-        return new ViewHolder(mLoadMoreView);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(mLayoutId, parent, false));
     }
 
-    private boolean hasLoadMore() {
-        return (mLoadMoreView != null || mLoadMoreLayoutId != 0)
-                && mState != STATE_HIDE;
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.i("Recycler", "onAttachedToRecyclerView");
+    }
+
+    public void setState(@State int state) {
+        mState = state;
+        Log.e("Recycler", "lastVisiblePosition=" + findLastVisibleItemPosition() + ", itemCount=" + getItemCount());
+        if (findLastVisibleItemPosition() >= getItemCount() - getWrapperItemCount()) {
+            notifyItemChanged(getItemCount() - 1);
+        }
+    }
+
+    public int findLastVisibleItemPosition() {
+        if (mAttachedRecyclerView == null) {
+            return -1;
+        }
+        final RecyclerView.LayoutManager layoutManager = mAttachedRecyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            return ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
+            int position = lastVisibleItemPositions[0];
+            for (int itemPosition : lastVisibleItemPositions) {
+                if (itemPosition > position) {
+                    position = itemPosition;
+                }
+            }
+        }
+        return handleFindLastVisibleItemPosition(mAttachedRecyclerView);
+    }
+
+    public int handleFindLastVisibleItemPosition(RecyclerView recyclerView) {
+        return -1;
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener listener) {
         mLoadMoreListener = listener;
     }
 
-    @State
-    public int getState() {
-        return mState;
+    public void setOnStateChangedListener(OnStateChangedListener onStateChangedListener) {
+        this.mOnStateChangedListener = onStateChangedListener;
     }
 
-    public void setState(@State int state) {
-        mState = state;
-    }
-
-    @IntDef({STATE_HIDE, STATE_LOADING_MORE, STATE_NO_MORE, STATE_LOADING_FAIL})
+    @IntDef({
+            HIDE,
+            LOADING_MORE,
+            NO_MORE,
+            LOADING_FAIL
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface State {
+        int HIDE = 0;
+        int LOADING_MORE = 1;
+        int NO_MORE = 2;
+        int LOADING_FAIL = 3;
+    }
+
+    public interface OnStateChangedListener {
+        void onStateChanged(@State int state, ViewHolder viewHolder);
     }
 
     public interface OnLoadMoreListener {

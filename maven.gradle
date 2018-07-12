@@ -1,17 +1,18 @@
-def artifactId = getArtifactId(project)
-def isAndroidLibrary = isAndroidLibrary(project)
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'com.github.dcendents.android-maven'
+def artifactId = getArtifactId(project)
+def isAndroidLibrary = isAndroidLibrary(project)
 
 uploadArchives {
     // gradlew -PSNAPSHOTS xxx:uploadArchives
-    if (project.hasProperty('SNAPSHOTS') && !project.version.endsWith('SNAPSHOT')) {
-        project.version = "${project.version}-SNAPSHOT"
-        println "snapshots version=${project.version}"
-    }
     repositories {
         mavenDeployer {
             //为Pom文件做数字签名
+            if (project.hasProperty('SNAPSHOTS') && !project.version.endsWith('SNAPSHOT')) {
+                project.version = "${project.version}-SNAPSHOT"
+                println "snapshots version=${project.version}"
+            }
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             pom.version = project.version
@@ -35,14 +36,17 @@ uploadArchives {
                 }
             }
 
-            def userName = project.hasProperty('USERNAME') ? project.USERNAME : config.maven.userName
-            def password = project.hasProperty('PASSWORD') ? project.PASSWORD : config.maven.password
-            assert userName != null
-            assert password != null
             // localRepos
             if (project.hasProperty('LOCAL_REPOS')) {
-                repository(url: config.maven.localRepos)
+                if (config.maven.localRepos == null) {
+                    throw new IllegalArgumentException('must config maven.local=xxx in local.properties when upload to Local Repos.')
+                }
+                repository(url: uri(config.maven.localRepos))
             } else {
+                def userName = project.hasProperty('USERNAME') ? project.USERNAME : config.maven.userName
+                def password = project.hasProperty('PASSWORD') ? project.PASSWORD : config.maven.password
+                assert userName != null
+                assert password != null
                 // releases
                 repository(url: config.maven.nexusReleasesUrl) {
                     authentication(userName: userName, password: password)
@@ -55,7 +59,6 @@ uploadArchives {
         }
     }
 }
-uploadArchives.dependsOn('cleanNexus')
 //为所有的jar包做数字签名
 //gpg签名需要签名文件
 signing {
