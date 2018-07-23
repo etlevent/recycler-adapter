@@ -1,5 +1,6 @@
 package cherry.android.recycler.sample.adapter;
 
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 import cherry.android.recycler.CommonAdapter;
 import cherry.android.recycler.ViewHolder;
 
-public class StringSimpleAdapter extends CommonAdapter<String, ViewHolder> {
+public class StringSimpleAdapter extends CommonAdapter<String, StringSimpleAdapter.SimpleViewHolder> {
     public StringSimpleAdapter() {
         super(android.R.layout.simple_list_item_1);
     }
@@ -16,9 +17,17 @@ public class StringSimpleAdapter extends CommonAdapter<String, ViewHolder> {
         super(data, android.R.layout.simple_list_item_1);
     }
 
+
     @Override
-    protected void convert(ViewHolder holder, String s, int position) {
+    protected void convert(SimpleViewHolder holder, String s, int position) {
         TextView textView = holder.findView(android.R.id.text1);
         textView.setText(s);
+    }
+
+    static class SimpleViewHolder extends ViewHolder {
+
+        SimpleViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

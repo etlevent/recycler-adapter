@@ -24,5 +24,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class * extends android.support.v7.widget.RecyclerView$ViewHolder {
-    public <init>(android.view.View);
+    <init>(android.view.View);
 }
