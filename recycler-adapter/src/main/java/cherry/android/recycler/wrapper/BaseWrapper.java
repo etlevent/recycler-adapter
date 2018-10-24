@@ -114,7 +114,7 @@ import java.util.List;
                         return gridLayoutManager.getSpanCount();
                     }
                     if (spanSizeLookup != null) {
-                        return spanSizeLookup.getSpanSize(position);
+                        return spanSizeLookup.getSpanSize(position - getWrapperTopCount());
                     }
                     return 1;
                 }

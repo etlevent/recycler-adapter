@@ -26,18 +26,20 @@ public abstract class BaseItemViewDelegate<T, VH extends RecyclerView.ViewHolder
 
     private static <H> Class<H> findHolderClass(Class clazz) {
         Type type = clazz.getGenericSuperclass();
-        Type[] params = ((ParameterizedType) type).getActualTypeArguments();
-        if (params.length < 2) {
-            if (!ItemViewDelegate.class.isAssignableFrom(clazz)) {
-                throw new IllegalArgumentException("cannot find Holder CLASS");
+        if (type != null && ParameterizedType.class.isAssignableFrom(type.getClass())) {
+            Type[] params = ((ParameterizedType) type).getActualTypeArguments();
+            if (params.length < 2) {
+                if (!ItemViewDelegate.class.isAssignableFrom(clazz)) {
+                    throw new IllegalArgumentException("cannot find Holder CLASS");
+                }
+                return findHolderClass(clazz.getSuperclass());
             }
-            return findHolderClass(clazz.getSuperclass());
-        }
-        for (Type param : params) {
-            if (Class.class.isAssignableFrom(param.getClass())) {
-                Class pClass = (Class) param;
-                if (RecyclerView.ViewHolder.class.isAssignableFrom(pClass)) {
-                    return pClass;
+            for (Type param : params) {
+                if (Class.class.isAssignableFrom(param.getClass())) {
+                    Class pClass = (Class) param;
+                    if (RecyclerView.ViewHolder.class.isAssignableFrom(pClass)) {
+                        return pClass;
+                    }
                 }
             }
         }

@@ -58,10 +58,10 @@ public class LoadMoreWrapper extends BaseWrapper {
     void onBindWrapperViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.d("Recycler", "onBindWrapperViewHolder " + position);
         Log.e("Recycler", "onBindWrapperViewHolder lastVisiblePosition=" + findLastVisibleItemPosition() + ", itemCount=" + getItemCount());
-        if (findLastVisibleItemPosition() < position - 1) {
-            Log.w("Recycler", "return with state changed.");
-            return;
-        }
+//        if (findLastVisibleItemPosition() < position - 1) {
+//            Log.w("Recycler", "return with state changed.");
+//            return;
+//        }
         if (mOnStateChangedListener != null) {
             mOnStateChangedListener.onStateChanged(mState, (ViewHolder) holder);
         }
@@ -99,7 +99,8 @@ public class LoadMoreWrapper extends BaseWrapper {
 
     public void setState(@State int state) {
         mState = state;
-        Log.e("Recycler", "lastVisiblePosition=" + findLastVisibleItemPosition() + ", itemCount=" + getItemCount());
+        Log.e("Recycler", "lastVisiblePosition=" + findLastVisibleItemPosition() + ", itemCount=" + getItemCount()
+                + ", wrapperItemCount=" + getWrapperItemCount());
         if (findLastVisibleItemPosition() >= getItemCount() - getWrapperItemCount()) {
             notifyItemChanged(getItemCount() - 1);
         }
