@@ -25,4 +25,16 @@ public interface DiffCapable<P> {
 
     }
 
+    class DefaultDiffCapable<P> implements DiffCapable<P> {
+
+        @Override
+        public boolean isSame(@Diff int diff, Object oldItem, Object newItem) {
+            return oldItem.equals(newItem);
+        }
+
+        @Override
+        public P payloads(Object oldItem, Object newItem) {
+            return null;
+        }
+    }
 }
