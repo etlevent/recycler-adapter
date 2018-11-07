@@ -1,3 +1,5 @@
+import java.util.jar.JarFile
+
 apply plugin: 'maven'
 def isAndroidLibrary = isAndroidLibrary(project)
 def artifactId = getArtifactId(project)
@@ -67,6 +69,42 @@ def javadocSource() {
         return project.javadocSource
     }
     return Collections.emptyList()
+}
+
+if (isAndroidLibrary) {
+    afterEvaluate {
+        //merge assets from jar
+        if (plugins.hasPlugin('com.android.library')) {
+            android.libraryVariants.all { variant ->
+                String suffix = variant.variantData.name.capitalize()
+                def copyAssets = tasks.create(name: "copy${suffix}AssetsInJar") {
+                    doLast {
+                        println "Run copy${suffix}AssetsInJar"
+                        def assetsDir = "${project.buildDir}${File.separator}intermediates${File.separator}generate_assets_in_jar${File.separator}${variant.variantData.name}${File.separator}$name"
+                        project.fileTree(include: ['*.jar'], dir: 'libs').files.each {
+                            def jarFile = new JarFile(it)
+                            jarFile.entries().each { jarEntry ->
+                                if (jarEntry.name.startsWith('assets')) {
+                                    File file = new File(assetsDir, jarEntry.name.replaceAll('assets', ''))
+                                    if (!file.parentFile.exists()) {
+                                        file.parentFile.mkdirs()
+                                    }
+                                    file.withOutputStream { out ->
+                                        jarFile.getInputStream(jarEntry).eachByte(1024) { buffer, count ->
+                                            out.write(buffer, 0, count)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        android.sourceSets.main.assets.srcDirs += file(assetsDir)
+                    }
+                }
+                def generateAssetsTask = tasks.findByName("generate${suffix}Assets")
+                generateAssetsTask.dependsOn copyAssets
+            }
+        }
+    }
 }
 //def excludeJavadoc() {
 //    if (project.hasProperty('javadocExclude')) {
