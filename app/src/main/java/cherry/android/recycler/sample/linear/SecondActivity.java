@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cherry.android.recycler.ItemViewDelegate;
-import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewConverter;
+import ext.android.adapter.delegate.ItemViewDelegate;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.ItemViewDelegateConverter;
 import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.delegate.SimpleDelegate1;
 import cherry.android.recycler.sample.delegate.SimpleDelegate2;
@@ -39,7 +39,7 @@ public class SecondActivity extends AppCompatActivity {
         mAdapter = new RecyclerAdapter();
         mAdapter.addDelegate(Foo.class)
                 .bindDelegate(new SimpleDelegate1(), new SimpleDelegate2())
-                .to(new ViewConverter<Foo>() {
+                .to(new ItemViewDelegateConverter<Foo>() {
                     @Override
                     public Class<? extends ItemViewDelegate> convert(Foo foo, int position) {
                         IFoo iFoo = foo.getBody();

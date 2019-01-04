@@ -17,16 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cherry.android.recycler.CommonAdapter;
-import cherry.android.recycler.ItemViewDelegate;
-import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewConverter;
-import cherry.android.recycler.ViewHolder;
-import cherry.android.recycler.diff.DiffCapable;
-import cherry.android.recycler.diff.PayloadsItemViewDelegate;
+import ext.android.adapter.CommonAdapter;
+import ext.android.adapter.ItemViewDelegateConverter;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.ViewHolder;
+import ext.android.adapter.delegate.ItemViewDelegate;
+import ext.android.adapter.diff.DiffCapable;
+import ext.android.adapter.diff.PayloadsItemViewDelegate;
 import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.model.IdModel;
-import cherry.android.recycler.wrapper.HeaderAndFooterWrapper;
+import ext.android.adapter.wrapper.HeaderAndFooterWrapper;
 
 public class LinearVerticalActivity extends AppCompatActivity {
 
@@ -55,7 +55,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
         };
         mAdapter = new RecyclerAdapter();
         mAdapter.addDelegate(IdModel.class).bindDelegate(new ItemViewDelegate1(), new ItemViewDelegate2())
-                .to(new ViewConverter<IdModel>() {
+                .to(new ItemViewDelegateConverter<IdModel>() {
                     @Override
                     public Class<? extends ItemViewDelegate<IdModel, ? extends RecyclerView.ViewHolder>> convert(IdModel idModel, int position) {
                         return position % 2 == 0 ? ItemViewDelegate1.class : ItemViewDelegate2.class;

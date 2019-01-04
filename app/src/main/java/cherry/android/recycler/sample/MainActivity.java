@@ -11,9 +11,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cherry.android.recycler.CommonAdapter;
-import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewHolder;
+import ext.android.adapter.CommonAdapter;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.ViewHolder;
 import cherry.android.recycler.sample.linear.LinearActivity;
 
 public class MainActivity extends RecyclerActivity {

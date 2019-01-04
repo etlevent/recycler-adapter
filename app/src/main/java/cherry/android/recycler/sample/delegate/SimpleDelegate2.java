@@ -3,8 +3,8 @@ package cherry.android.recycler.sample.delegate;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
-import cherry.android.recycler.BaseItemViewDelegate;
-import cherry.android.recycler.ViewHolder;
+import ext.android.adapter.delegate.BaseItemViewDelegate;
+import ext.android.adapter.ViewHolder;
 import cherry.android.recycler.sample.model.Foo;
 import cherry.android.recycler.sample.model.Foo2;
 

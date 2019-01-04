@@ -9,9 +9,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import cherry.android.recycler.BaseItemViewDelegate;
-import cherry.android.recycler.RecyclerAdapter;
-import cherry.android.recycler.ViewHolder;
+import ext.android.adapter.delegate.BaseItemViewDelegate;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.ViewHolder;
 import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.RecyclerActivity;
 

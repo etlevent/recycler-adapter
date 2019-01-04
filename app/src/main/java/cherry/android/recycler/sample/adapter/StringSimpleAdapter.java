@@ -5,8 +5,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cherry.android.recycler.CommonAdapter;
-import cherry.android.recycler.ViewHolder;
+import ext.android.adapter.CommonAdapter;
+import ext.android.adapter.ViewHolder;
 
 public class StringSimpleAdapter extends CommonAdapter<String, StringSimpleAdapter.SimpleViewHolder> {
     public StringSimpleAdapter() {

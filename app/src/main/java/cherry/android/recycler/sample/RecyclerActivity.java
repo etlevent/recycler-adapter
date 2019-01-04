@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.Random;
 
-import cherry.android.recycler.DividerItemDecoration;
+import ext.android.adapter.decoration.DividerItemDecoration;
 
 public class RecyclerActivity extends AppCompatActivity {
 
