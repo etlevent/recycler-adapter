@@ -4,7 +4,7 @@ buildscript {
     apply from: 'versions.gradle'
     addRepos(repositories)
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         //自动化jcenter打包插件
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         //自动化maven打包插件

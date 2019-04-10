@@ -40,7 +40,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         if (parent.getLayoutManager() == null || mDivider == null) {
             return;
         }
@@ -93,9 +93,13 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             parent.getDecoratedBoundsWithMargins(child, mBounds);
             final int right = mBounds.right + Math.round(child.getTranslationX());
             //final int left = right - mDivider.getIntrinsicWidth();
+            final int decoratedWidth;
             final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-            final int decoratedWidth = layoutManager.getRightDecorationWidth(child) - layoutManager.getLeftDecorationWidth(child);
-            final int left = right - decoratedWidth;
+            int left = 0;
+            if (layoutManager != null) {
+                decoratedWidth = layoutManager.getRightDecorationWidth(child) - layoutManager.getLeftDecorationWidth(child);
+                left = right - decoratedWidth;
+            }
             mDivider.setBounds(left, mBounds.top, right, mBounds.bottom);
             mDivider.draw(canvas);
         }
@@ -118,7 +122,6 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         Log.d(TAG, "isLastRow=[" + isLastRow + "] isLastColumn=[" + isLastColumn + "]");
         if (isLastRow && isLastColumn) {
             outRect.set(0, 0, 0, 0);
-            return;
         } else if (isLastRow) {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
         } else if (isLastColumn) {
