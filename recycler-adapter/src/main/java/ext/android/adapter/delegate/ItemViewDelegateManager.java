@@ -1,12 +1,13 @@
 package ext.android.adapter.delegate;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.Map;
+import java.util.Collection;
 
 import ext.android.adapter.ItemTypeHolder;
 import ext.android.adapter.ItemViewDelegateConverter;
@@ -78,27 +79,22 @@ public final class ItemViewDelegateManager {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public int getItemViewType(@NonNull final Object item, final int position) {
+    public int getItemViewType(final Object item, final int position) {
         Class<?> itemClass = item.getClass();
-        ItemViewDelegate delegate;
-        for (Map.Entry<Class<?>, ItemTypeHolder<?>> entry : typeMap.entrySet()) {
-            if (itemClass.equals(entry.getValue().getItemClass())
-                    || entry.getValue().getItemClass().isAssignableFrom(itemClass)) {
-                delegate = entry.getValue().getItemViewDelegate(item, position);
-                return delegates.indexOfValue(delegate);
-            }
+        ItemTypeHolder<?> itemTypeHolder = getItemTypeHolder(itemClass);
+        if (itemTypeHolder != null) {
+            ItemViewDelegate delegate = itemTypeHolder.getItemViewDelegate(item, position);
+            return delegates.indexOfValue(delegate);
         }
         StringBuilder builder = new StringBuilder();
         builder.append("Cannot find itemType according item: [")
                 .append(item)
                 .append("], @ position=[")
                 .append(position)
+                .append(']')
+                .append(", item class=[")
+                .append(item.getClass())
                 .append(']');
-        if (item != null) {
-            builder.append(", item class=[")
-                    .append(item.getClass())
-                    .append(']');
-        }
         throw new IllegalArgumentException(builder.toString());
     }
 
@@ -110,5 +106,21 @@ public final class ItemViewDelegateManager {
      */
     public ItemViewDelegate getItemViewDelegate(int viewType) {
         return delegates.get(viewType);
+    }
+
+    @Nullable
+    private ItemTypeHolder getItemTypeHolder(Class<?> clazz) {
+        Collection<ItemTypeHolder<?>> holders = typeMap.values();
+        for (ItemTypeHolder<?> itemTypeHolder : holders) {
+            if (clazz.equals(itemTypeHolder.getItemClass())) {
+                return itemTypeHolder;
+            }
+        }
+        for (ItemTypeHolder<?> itemTypeHolder : holders) {
+            if (itemTypeHolder.getItemClass().isAssignableFrom(clazz)) {
+                return itemTypeHolder;
+            }
+        }
+        return null;
     }
 }

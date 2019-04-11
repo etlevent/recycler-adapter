@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cherry.android.recycler.sample.R;
+import cherry.android.recycler.sample.model.IdModel;
 import ext.android.adapter.CommonAdapter;
 import ext.android.adapter.ItemViewDelegateConverter;
 import ext.android.adapter.RecyclerAdapter;
@@ -24,8 +26,6 @@ import ext.android.adapter.ViewHolder;
 import ext.android.adapter.delegate.ItemViewDelegate;
 import ext.android.adapter.diff.DiffCapable;
 import ext.android.adapter.diff.PayloadsItemViewDelegate;
-import cherry.android.recycler.sample.R;
-import cherry.android.recycler.sample.model.IdModel;
 import ext.android.adapter.wrapper.HeaderAndFooterWrapper;
 
 public class LinearVerticalActivity extends AppCompatActivity {
@@ -81,8 +81,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position) {
-                Log.d("Test", "position = " + position);
-                startActivity(new Intent(LinearVerticalActivity.this, SecondActivity.class));
+                startActivity(new Intent(LinearVerticalActivity.this, position % 2 == 0 ? SecondActivity.class : ThirdActivity.class));
             }
         });
         final Random random = new Random();

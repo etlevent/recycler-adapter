@@ -22,6 +22,7 @@
         <activity android:name=".linear.LinearHorizontalActivity" />
         <activity android:name=".linear.LinearLoadingMoreActivity" />
         <activity android:name=".linear.SecondActivity" />
+        <activity android:name=".linear.ThirdActivity" />
     </application>
 
 </manifest>
