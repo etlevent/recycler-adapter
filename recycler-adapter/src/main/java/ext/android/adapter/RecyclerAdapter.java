@@ -55,7 +55,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     };
 
     public RecyclerAdapter(@Nullable List<?> items) {
-        mItems = transferUnmodifiable(items);
+        mItems = items;
         mDelegateManager = ItemViewDelegateManager.get();
     }
 
@@ -183,13 +183,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setItems(@Nullable List<?> items) {
-        this.mItems = transferUnmodifiable(items);
+        this.mItems = items;
         notifyDataSetChanged();
     }
 
     public <P> void setItems(@Nullable List<?> items, DiffCapable<P> diffCapable) {
         final boolean diff = diff(this.mItems, items, diffCapable);
-        this.mItems = transferUnmodifiable(items);
+        this.mItems = items;
         if (!diff) {
             notifyDataSetChanged();
         }
@@ -259,8 +259,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private final DiffCapable<P> diffCapable;
 
         DiffCallback(List<?> oldItems, List<?> newItems, DiffCapable<P> diffCapable) {
-            this.oldItems = transferUnmodifiable(oldItems);
-            this.newItems = transferUnmodifiable(newItems);
+            this.oldItems = oldItems;
+            this.newItems = newItems;
             this.diffCapable = diffCapable;
         }
 

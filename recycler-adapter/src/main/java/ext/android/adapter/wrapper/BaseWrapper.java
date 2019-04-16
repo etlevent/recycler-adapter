@@ -72,8 +72,8 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
     @CallSuper
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        mInnerAdapter.onAttachedToRecyclerView(recyclerView);
         mAttachedRecyclerView = recyclerView;
+        mInnerAdapter.onAttachedToRecyclerView(recyclerView);
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
@@ -106,7 +106,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
         int position = holder.getLayoutPosition();
         if (isWrapperViewPosition(position)) {
             ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            if (layoutParams != null && layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
+            if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
                 StaggeredGridLayoutManager.LayoutParams lp = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
                 lp.setFullSpan(true);
             }

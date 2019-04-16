@@ -31,23 +31,30 @@ public class LinearLoadingMoreActivity extends RecyclerActivity {
             @Override
             public void onLoadMore() {
                 Log.i(TAG, "onLoadMore");
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (count > 5) {
-                            mWrapper.setState(LoadMoreWrapper.STATE_NO_MORE);
+                if (count > 5) {
+                    mWrapper.setState(LoadMoreWrapper.STATE_NO_MORE);
+                } else {
+                    final String s = "load More item. " + count;
+                    mRecyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mItems.add(s);
+                            mAdapter.notifyItemChanged(mItems.size() - 1);
                         }
-                        mItems.add("load More item. " + count);
-                        mAdapter.notifyItemChanged(mItems.size() - 1);
-                        count++;
-                    }
-                }, 1500);
+                    }, 1500);
+                }
+                count++;
             }
         });
         mRecyclerView.setAdapter(mWrapper);
-        for (int i = 0; i < 15; i++) {
-            mItems.add("it is item " + i);
-        }
-        mAdapter.setItems(mItems);
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 15; i++) {
+                    mItems.add("it is item " + i);
+                }
+                mAdapter.setItems(mItems);
+            }
+        }, 300);
     }
 }

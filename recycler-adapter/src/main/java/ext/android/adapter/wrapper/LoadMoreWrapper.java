@@ -104,8 +104,6 @@ public class LoadMoreWrapper extends BaseWrapper {
                     final int lastVisiblePosition = linearLayoutManager.findLastVisibleItemPosition();
                     boolean isChildFullPage = !(firstVisiblePosition == 0 && lastVisiblePosition == getRealItemCount() - 1);
                     setLoadMoreEnabled(isChildFullPage);
-
-
                 } else if (layoutManager instanceof StaggeredGridLayoutManager) {
                     int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(null);
                     int position = lastVisibleItemPositions[0];
@@ -122,6 +120,9 @@ public class LoadMoreWrapper extends BaseWrapper {
     }
 
     private void setLoadMoreEnabled(boolean enabled) {
+        if (enabled != mIsLoadMoreEnabled) {
+            notifyItemChanged(getItemCount() - 1);
+        }
         mIsLoadMoreEnabled = enabled;
     }
 

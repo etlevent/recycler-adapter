@@ -86,16 +86,15 @@ public final class ItemViewDelegateManager {
             ItemViewDelegate delegate = itemTypeHolder.getItemViewDelegate(item, position);
             return delegates.indexOfValue(delegate);
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append("Cannot find itemType according item: [")
-                .append(item)
-                .append("], @ position=[")
-                .append(position)
-                .append(']')
-                .append(", item class=[")
-                .append(item.getClass())
-                .append(']');
-        throw new IllegalArgumentException(builder.toString());
+        String msg = "Cannot find itemType according item: [" +
+                item +
+                "], @ position=[" +
+                position +
+                ']' +
+                ", item class=[" +
+                item.getClass() +
+                ']';
+        throw new IllegalArgumentException(msg);
     }
 
     /**
