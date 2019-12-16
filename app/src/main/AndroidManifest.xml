@@ -23,6 +23,8 @@
         <activity android:name=".linear.LinearLoadingMoreActivity" />
         <activity android:name=".linear.SecondActivity" />
         <activity android:name=".linear.ThirdActivity" />
+        <activity android:name=".grid.GridActivity" />
+        <activity android:name=".tree.LinearTreeNodeActivity" />
     </application>
 
 </manifest>

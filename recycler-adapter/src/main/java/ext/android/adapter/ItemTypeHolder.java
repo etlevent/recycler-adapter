@@ -42,7 +42,8 @@ public final class ItemTypeHolder<T> {
         Class<?> itemViewClass = this.converter.convert((T) item, position);
         for (int i = 0; i < delegates.size(); i++) {
             ItemViewDelegate delegate = delegates.get(i);
-            if (delegate.getClass().equals(itemViewClass)) {
+            if (delegate == null) continue;
+            if (itemViewClass.isAssignableFrom(delegate.getClass())) {
                 return delegate;
             }
         }

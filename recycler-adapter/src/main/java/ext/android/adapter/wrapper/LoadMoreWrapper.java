@@ -26,7 +26,7 @@ public class LoadMoreWrapper extends BaseWrapper {
     private int mState;
     private OnLoadMoreListener mLoadMoreListener;
 
-    public LoadMoreWrapper(@NonNull RecyclerView.Adapter adapter, @Nullable LoadMoreView loadMoreView) {
+    public LoadMoreWrapper(@NonNull RecyclerView.Adapter<? super RecyclerView.ViewHolder> adapter, @Nullable LoadMoreView loadMoreView) {
         super(adapter);
         this.mLoadMoreView = loadMoreView;
         this.registerAdapterDataObserver(new LoadMoreAdapterDataObserver());

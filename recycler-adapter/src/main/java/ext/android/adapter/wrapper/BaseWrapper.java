@@ -15,12 +15,12 @@ import java.util.List;
  */
 
 public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final RecyclerView.Adapter mInnerAdapter;
+    private final RecyclerView.Adapter<? super RecyclerView.ViewHolder> mInnerAdapter;
     private final List<Integer> mWrapperViewTypeList;
-    protected RecyclerView mAttachedRecyclerView;
+    RecyclerView mAttachedRecyclerView;
     private final RecyclerView.AdapterDataObserver mDataObserver;
 
-    public BaseWrapper(@NonNull RecyclerView.Adapter adapter) {
+    BaseWrapper(@NonNull RecyclerView.Adapter<? super RecyclerView.ViewHolder> adapter) {
         mInnerAdapter = adapter;
         mWrapperViewTypeList = new ArrayList<>();
         mDataObserver = new WrapperAdapterDataObserver();
@@ -42,17 +42,17 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
         return mInnerAdapter.getItemViewType(position - getWrapperTopCount());
     }
 
+    @NonNull
     @Override
-    public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (isWrapperViewType(viewType)) {
             return onCreateWrapperViewHolder(parent, viewType);
         }
         return mInnerAdapter.onCreateViewHolder(parent, viewType);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (isWrapperViewPosition(position)) {
             onBindWrapperViewHolder(holder, position);
         } else {
@@ -61,7 +61,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
         if (isWrapperViewPosition(position)) {
             super.onBindViewHolder(holder, position, payloads);
         } else {
@@ -101,7 +101,7 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
 
     @CallSuper
     @Override
-    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         mInnerAdapter.onViewAttachedToWindow(holder);
         int position = holder.getLayoutPosition();
         if (isWrapperViewPosition(position)) {

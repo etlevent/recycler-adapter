@@ -11,10 +11,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cherry.android.recycler.sample.RecyclerActivity;
+import cherry.android.recycler.sample.tree.LinearTreeNodeActivity;
 import ext.android.adapter.CommonAdapter;
 import ext.android.adapter.RecyclerAdapter;
 import ext.android.adapter.ViewHolder;
-import cherry.android.recycler.sample.RecyclerActivity;
 
 public class LinearActivity extends RecyclerActivity {
     @Override
@@ -27,6 +28,7 @@ public class LinearActivity extends RecyclerActivity {
         items.add("HORIZONTAL with Header and Footer");
         items.add("VERTICAL with Header and Footer");
         items.add("VERTICAL with Loading More");
+        items.add("VERTICAL Tree Node");
         RecyclerAdapter adapter = new CommonAdapter<String, ViewHolder>(items, android.R.layout.simple_list_item_1) {
 
             @Override
@@ -46,11 +48,13 @@ public class LinearActivity extends RecyclerActivity {
                         startActivity(new Intent(LinearActivity.this, LinearVerticalActivity.class));
                         break;
                     case 2:
-                        break;
                     case 3:
                         break;
                     case 4:
                         startActivity(new Intent(LinearActivity.this, LinearLoadingMoreActivity.class));
+                        break;
+                    case 5:
+                        startActivity(new Intent(LinearActivity.this, LinearTreeNodeActivity.class));
                         break;
                 }
             }

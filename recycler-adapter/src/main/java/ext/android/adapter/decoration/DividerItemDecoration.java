@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
 
-    public void setDrawable(@NonNull Drawable drawable) {
+    public void setDrawable(@Nullable Drawable drawable) {
         if (drawable == null) {
             throw new IllegalArgumentException("Drawable cannot be null.");
         }
@@ -67,7 +68,12 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final int bottom = mBounds.bottom + Math.round(child.getTranslationY());
             //final int top = bottom - mDivider.getIntrinsicHeight();
             final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-            final int decoratedHeight = layoutManager.getBottomDecorationHeight(child) - layoutManager.getTopDecorationHeight(child);
+            final int decoratedHeight;
+            if (layoutManager != null) {
+                decoratedHeight = layoutManager.getBottomDecorationHeight(child) - layoutManager.getTopDecorationHeight(child);
+            } else {
+                decoratedHeight = 0;
+            }
             final int top = bottom - decoratedHeight;
             mDivider.setBounds(mBounds.left, top, mBounds.right, bottom);
             mDivider.draw(canvas);
@@ -107,10 +113,13 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                               RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state) {
         if (mDivider == null) {
             outRect.set(0, 0, 0, 0);
+            return;
+        }
+        if (parent.getAdapter() == null) {
             return;
         }
         final int itemPosition = parent.getChildAdapterPosition(view);

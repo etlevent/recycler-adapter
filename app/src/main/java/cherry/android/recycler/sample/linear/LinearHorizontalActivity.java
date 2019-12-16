@@ -9,11 +9,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ext.android.adapter.delegate.BaseItemViewDelegate;
-import ext.android.adapter.RecyclerAdapter;
-import ext.android.adapter.ViewHolder;
 import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.RecyclerActivity;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.ViewHolder;
+import ext.android.adapter.delegate.BaseItemViewDelegate;
 
 public class LinearHorizontalActivity extends RecyclerActivity {
 
@@ -21,7 +21,6 @@ public class LinearHorizontalActivity extends RecyclerActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mRecyclerView.addItemDecoration(getDefaultItemDecoration());
         List list = new ArrayList();
         for (int i = 0; i < 50; i++) {
             if (nextInt(2) == 0) {

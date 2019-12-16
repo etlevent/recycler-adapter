@@ -7,14 +7,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cherry.android.recycler.sample.grid.GridActivity;
+import cherry.android.recycler.sample.linear.LinearActivity;
 import ext.android.adapter.CommonAdapter;
 import ext.android.adapter.RecyclerAdapter;
 import ext.android.adapter.ViewHolder;
-import cherry.android.recycler.sample.linear.LinearActivity;
 
 public class MainActivity extends RecyclerActivity {
 
@@ -22,7 +24,6 @@ public class MainActivity extends RecyclerActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.addItemDecoration(getDefaultItemDecoration());
 
         final List<String> items = new ArrayList<>();
         items.add("Linear");
@@ -42,7 +43,17 @@ public class MainActivity extends RecyclerActivity {
                     case 0:
                         startActivity(new Intent(MainActivity.this, LinearActivity.class));
                         break;
+                    case 1:
+                        startActivity(new Intent(MainActivity.this, GridActivity.class));
+                        break;
                 }
+            }
+        });
+        adapter.setOnItemLongClickListener(new RecyclerAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(View itemView, RecyclerView.ViewHolder holder, int position) {
+                Toast.makeText(MainActivity.this, "onItemLongClick [" + position + "]", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
         mRecyclerView.setAdapter(adapter);

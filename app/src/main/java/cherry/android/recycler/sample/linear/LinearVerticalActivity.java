@@ -1,5 +1,6 @@
 package cherry.android.recycler.sample.linear;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
 
     private RecyclerAdapter mAdapter;
     private HeaderAndFooterWrapper mWrapper;
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -132,7 +134,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
     }
 
     private static class ItemViewDelegate1 extends PayloadsItemViewDelegate<IdModel, String, ViewHolder> {
-        public ItemViewDelegate1() {
+        ItemViewDelegate1() {
             super(android.R.layout.simple_list_item_1);
         }
 
@@ -153,7 +155,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
 
     private static class ItemViewDelegate2 extends PayloadsItemViewDelegate<IdModel, String, ViewHolder> {
 
-        public ItemViewDelegate2() {
+        ItemViewDelegate2() {
             super(android.R.layout.simple_list_item_2);
         }
 

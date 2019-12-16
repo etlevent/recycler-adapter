@@ -28,6 +28,7 @@ public class RecyclerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler);
         mDefaultItemDecoration = new DividerItemDecoration(this);
         mDefaultItemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_divider));
+        mRecyclerView.addItemDecoration(mDefaultItemDecoration);
     }
 
     protected RecyclerView.ItemDecoration getDefaultItemDecoration() {

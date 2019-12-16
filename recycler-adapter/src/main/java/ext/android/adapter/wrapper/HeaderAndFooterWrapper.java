@@ -21,7 +21,7 @@ public class HeaderAndFooterWrapper extends BaseWrapper {
     private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
     private SparseArrayCompat<View> mFooterViews = new SparseArrayCompat<>();
 
-    public HeaderAndFooterWrapper(RecyclerView.Adapter adapter) {
+    public HeaderAndFooterWrapper(RecyclerView.Adapter<? super RecyclerView.ViewHolder> adapter) {
         super(adapter);
     }
 

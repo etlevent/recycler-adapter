@@ -38,7 +38,7 @@ public final class ItemViewDelegateManager {
      */
     @SuppressWarnings("unchecked")
     public <T, VH extends RecyclerView.ViewHolder> void addDelegate(@NonNull Class<? extends T> clazz,
-                                                                    @NonNull ItemViewDelegate<T, VH> delegate) {
+                                                                    @NonNull ItemViewDelegate<? extends T, VH> delegate) {
         if (delegate == null || clazz == null) {
             throw new NullPointerException("class or delegate should not be NULL!");
         }
@@ -49,7 +49,7 @@ public final class ItemViewDelegateManager {
     /**
      * 添加Class - items映射, 一对多映射关系
      *
-     * @param clazz
+     * @param clazz item class
      * @param converter
      * @param delegates
      * @param <T>

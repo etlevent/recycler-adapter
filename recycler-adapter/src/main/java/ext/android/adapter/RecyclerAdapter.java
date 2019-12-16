@@ -8,37 +8,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import ext.android.adapter.delegate.ItemViewDelegate;
-import ext.android.adapter.delegate.ItemViewDelegateManager;
 import ext.android.adapter.diff.DiffCapable;
-import ext.android.adapter.diff.PayloadsCapable;
 
 /**
  * Created by Administrator on 2017/6/6.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecyclerAdapter extends AbstractRecyclerAdapter {
 
     private static final String TAG = "RecyclerAdapter";
 
     private static final int MSG_DIFF_RESULT = 0;
-    private final ItemViewDelegateManager mDelegateManager;
     private List<?> mItems;
-    private LayoutInflater mInflater;
-
-    private OnItemClickListener mItemClickListener;
-    private OnItemLongClickListener mItemLongClickListener;
-
     private boolean mAttached;
     private ThreadPoolExecutor mExecutor;
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
@@ -54,113 +41,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     };
 
+    public RecyclerAdapter() {
+    }
+
     public RecyclerAdapter(@Nullable List<?> items) {
         mItems = items;
-        mDelegateManager = ItemViewDelegateManager.get();
     }
 
-    public RecyclerAdapter() {
-        mDelegateManager = ItemViewDelegateManager.get();
-    }
-
-    @NonNull
-    private static List<?> transferUnmodifiable(@Nullable List<?> items) {
-        if (items == null) {
-            items = Collections.EMPTY_LIST;
-        }
-        return Collections.unmodifiableList(items);
-    }
-
+    @Nullable
     @Override
-    public final int getItemViewType(int position) {
-        if (!isDelegateNotEmpty()) return super.getItemViewType(position);
-        if (mItems.isEmpty()) return super.getItemViewType(position);
-        Object item = mItems.get(position);
-        return mDelegateManager.getItemViewType(item, position);
-    }
-
-    @NonNull
-    @Override
-    public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (mInflater == null) {
-            mInflater = LayoutInflater.from(parent.getContext());
-        }
-        ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
-        RecyclerView.ViewHolder holder = delegate.createViewHolder(mInflater, parent);
-        setListener(holder.itemView, holder);
-        return holder;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (mItems.isEmpty()) return;
-        int viewType = holder.getItemViewType();
-        ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
-        holder.itemView.setTag(R.id.item_position, position);
-        delegate.convert(holder, mItems.get(position), position);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        if (payloads.isEmpty()) {
-            super.onBindViewHolder(holder, position, payloads);
-        } else {
-            int viewType = holder.getItemViewType();
-            ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
-            if (PayloadsCapable.class.isAssignableFrom(delegate.getClass())) {
-                PayloadsCapable payloadsCapable = (PayloadsCapable) delegate;
-                holder.itemView.setTag(R.id.item_position, position);
-                payloadsCapable.payloads(holder, position, payloads);
-            } else {
-                Log.e(TAG, "data has payloads, but not have impl payloadsCapable. " + delegate.getClass().getSimpleName());
-                super.onBindViewHolder(holder, position, payloads);
-            }
-        }
+    protected Object getItem(int position) {
+        return mItems.get(position);
     }
 
     @Override
     public int getItemCount() {
         return mItems != null ? mItems.size() : 0;
-    }
-
-    private boolean isDelegateNotEmpty() {
-        return mDelegateManager.getDelegateCount() > 0;
-    }
-
-    private void setListener(final View itemView, final RecyclerView.ViewHolder holder) {
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null) {
-                    /*int position = holder.getAdapterPosition();*/
-                    /*real position except header*/
-                    int position = (int) itemView.getTag(R.id.item_position);
-                    mItemClickListener.onItemClick(itemView, holder, position);
-                }
-            }
-        });
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mItemLongClickListener != null) {
-                    /*int position = holder.getAdapterPosition();*/
-                    /*real position except header*/
-                    int position = (int) itemView.getTag(R.id.item_position);
-                    return mItemLongClickListener.onItemLongClick(itemView, holder, position);
-                }
-                return false;
-            }
-        });
-    }
-
-    public <T, VH extends RecyclerView.ViewHolder> void addDelegate(@NonNull Class<? extends T> clazz,
-                                                                    @NonNull ItemViewDelegate<T, VH> delegate) {
-        mDelegateManager.addDelegate(clazz, delegate);
-    }
-
-    public <T> OneToManyDelegate<T> addDelegate(@NonNull Class<? extends T> clazz) {
-        return new OneToManyWrapper<>(clazz, mDelegateManager);
     }
 
     @Override
@@ -236,22 +132,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mExecutor = null;
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mItemClickListener = listener;
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
-        this.mItemLongClickListener = listener;
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position);
-    }
-
-    public interface OnItemLongClickListener {
-        boolean onItemLongClick(View itemView, RecyclerView.ViewHolder holder, int position);
-    }
-
     private static class DiffCallback<P> extends DiffUtil.Callback {
 
         private final List<?> oldItems;
@@ -266,12 +146,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @Override
         public int getOldListSize() {
-            return this.oldItems.size();
+            return this.oldItems != null ? this.oldItems.size() : 0;
         }
 
         @Override
         public int getNewListSize() {
-            return this.newItems.size();
+            return this.newItems != null ? this.newItems.size() : 0;
         }
 
         @Override
