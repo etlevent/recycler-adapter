@@ -1,6 +1,7 @@
+apply plugin: 'maven'
+
 import java.util.jar.JarFile
 
-apply plugin: 'maven'
 def isAndroidLibrary = isAndroidLibrary(project)
 def artifactId = getArtifactId(project)
 
@@ -13,6 +14,7 @@ task sourcesJar(type: Jar) {
     }
     classifier = 'sources'
 }
+
 if (isAndroidLibrary) {
     android.libraryVariants.all { variant ->
         if (variant.name == 'release') { //我们只需 release 的 javadoc

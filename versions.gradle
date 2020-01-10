@@ -32,16 +32,15 @@ bintray.apikey = getLocalProperties().getProperty('bintray.apikey')
 config.bintray = bintray
 
 def maven = [:]
-def nexus = 'http://192.168.39.102:8081/nexus'
-nexus = 'http://common.homelabs.in:8081/nexus'
-def nexusContent = "${nexus}/content"
+def nexus = 'http://maven.homelabs.in:8081'
+def nexusContent = "${nexus}/repository"
 maven.userName = getLocalProperties().getProperty('maven.userName')
 maven.password = getLocalProperties().getProperty('maven.password')
-//maven.nexusReleasesUrl = "${nexusContent}/repositories/releases"
-maven.nexusReleasesUrl = "${nexusContent}/repositories/thirdparty"
-maven.nexusSnapshotsUrl = "${nexusContent}/repositories/snapshots"
+//maven.nexusReleasesUrl = "${nexusContent}/maven-releases"
+maven.nexusSnapshotsUrl = "${nexusContent}/maven-snapshots"
+maven.nexusSnapshotsUrl = "${nexusContent}/thirdparty"
 maven.localRepos = getLocalProperties().getProperty('maven.local')
-maven.nexusPublicUrl = "${nexusContent}/groups/public"
+maven.nexusPublicUrl = "${nexusContent}/maven-public"
 config.maven = maven
 
 ext.config = config
@@ -74,7 +73,7 @@ def getArtifactId(Project project) {
     return artifactId
 }
 
-def isAndroidLibrary(Project project) {
+static def isAndroidLibrary(Project project) {
     return project.plugins.hasPlugin('com.android.library')
 }
 
