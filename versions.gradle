@@ -7,7 +7,7 @@ def desc = 'adapter for RecyclerView'
 
 def versions = [:]
 versions.group = 'ext.android.adapter'
-versions.version = '1.2.3'
+versions.version = '2.0.0-SNAPSHOT'
 versions.desc = desc
 versions.siteUrl = "${git}/recycler-adapter"
 versions.gitUrl = "${versions.siteUrl}.git"

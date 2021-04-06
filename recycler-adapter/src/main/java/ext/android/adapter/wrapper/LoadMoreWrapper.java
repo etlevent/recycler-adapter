@@ -1,13 +1,14 @@
 package ext.android.adapter.wrapper;
 
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,7 +21,7 @@ public class LoadMoreWrapper extends BaseWrapper {
     public static final int STATE_LOADING_MORE = 0;
     public static final int STATE_NO_MORE = 1;
     public static final int STATE_LOADING_FAIL = 2;
-    private LoadMoreView mLoadMoreView;
+    private final LoadMoreView mLoadMoreView;
     private boolean mIsLoadMoreEnabled;
     @State
     private int mState;

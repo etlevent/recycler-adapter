@@ -1,6 +1,6 @@
 package ext.android.adapter.loadmore;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 import ext.android.adapter.ViewHolder;
 import ext.android.adapter.wrapper.LoadMoreWrapper;

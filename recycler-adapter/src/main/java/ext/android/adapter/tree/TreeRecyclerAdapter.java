@@ -1,33 +1,33 @@
 package ext.android.adapter.tree;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ext.android.adapter.RecyclerAdapter;
-import ext.android.adapter.diff.DiffCapable;
 
 public class TreeRecyclerAdapter extends RecyclerAdapter {
     private List<?> mSource;
     @Nullable
     private OnExpandedChangedListener mOnExpandedChangedListener;
     private OnItemClickListener mActualOnItemClickListener;
-    private State mState;
+    private final State mState;
 
     private final OnItemClickListener mInternalOnItemClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(View itemView, RecyclerView.ViewHolder holder, int position) {
-            final List<?> items = TreeRecyclerAdapter.super.getItems();
-            if (items != null) {
-                final Object item = items.get(position);
-                if (item instanceof NodeGroup) {
-                    final NodeGroup nodeGroup = (NodeGroup) item;
-                    if (nodeGroup.isDispatchExpandAutomatic()) {
-                        dispatchExpandedChanged(nodeGroup);
-                    }
+            final List<?> items = TreeRecyclerAdapter.super.getList();
+            final Object item = items.get(position);
+            if (item instanceof NodeGroup) {
+                final NodeGroup nodeGroup = (NodeGroup) item;
+                if (nodeGroup.isDispatchExpandAutomatic()) {
+                    dispatchExpandedChanged(nodeGroup);
                 }
             }
             if (mActualOnItemClickListener != null) {
@@ -46,27 +46,29 @@ public class TreeRecyclerAdapter extends RecyclerAdapter {
     }
 
     @Override
-    public void setItems(@Nullable List<?> items) {
-        this.mSource = items;
-        super.setItems(flattenSource(items));
+    public void setList(@Nullable List<?> list) {
+        this.mSource = list;
+        super.setList(flattenSource(list));
     }
 
     @Override
-    public <P> void setItems(@Nullable List<?> items, DiffCapable<P> diffCapable) {
-        this.mSource = items;
-        super.setItems(flattenSource(items), diffCapable);
+    public void submitList(@Nullable List<?> list) {
+        this.mSource = list;
+        super.submitList(flattenSource(list));
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public List<?> getItems() {
+    public List<?> getList() {
+        if (this.mSource == null)
+            return Collections.emptyList();
         return this.mSource;
     }
 
 
     @Nullable
-    public List<?> getRealItems() {
-        return super.getItems();
+    public List<?> getRealList() {
+        return super.getList();
     }
 
     public void setOnExpandedChangedListener(@Nullable OnExpandedChangedListener listener) {
@@ -85,10 +87,7 @@ public class TreeRecyclerAdapter extends RecyclerAdapter {
     }
 
     public void dispatchExpandedChanged(NodeGroup nodeGroup) {
-        final List<?> actualItems = super.getItems();
-        if (actualItems == null) {
-            return;
-        }
+        final List<?> actualItems = new ArrayList<>(super.getList());
         final int index = actualItems.indexOf(nodeGroup);
         if (nodeGroup.isExpanded()) {
             nodeGroup.setExpanded(false);
@@ -106,31 +105,27 @@ public class TreeRecyclerAdapter extends RecyclerAdapter {
     }
 
     private void onNodeGroupExpanded(NodeGroup nodeGroup) {
-        final List actualItems = super.getItems();
-        if (actualItems == null) {
-            return;
-        }
+        final List<Object> actualList = new ArrayList<>(super.getList());
         final List<?> recursiveChild = unfoldIfNodeGroup(nodeGroup, State.ALL);
         if (recursiveChild == null || recursiveChild.isEmpty()) {
             return;
         }
-        final int index = actualItems.indexOf(nodeGroup);
-        actualItems.addAll(index + 1, recursiveChild);
+        final int index = actualList.indexOf(nodeGroup);
+        actualList.addAll(index + 1, recursiveChild);
+        super.setList(actualList);
         notifyItemChanged(index);
         notifyItemRangeInserted(index + 1, recursiveChild.size());
     }
 
     private void onNodeGroupCollapsed(NodeGroup nodeGroup) {
-        final List actualItems = super.getItems();
-        if (actualItems == null) {
-            return;
-        }
+        final List<Object> actualList = new ArrayList<>(super.getList());
         final List<?> recursiveChild = unfoldIfNodeGroup(nodeGroup, State.ALL);
         if (recursiveChild == null || recursiveChild.isEmpty()) {
             return;
         }
-        final int index = actualItems.indexOf(nodeGroup);
-        actualItems.removeAll(recursiveChild);
+        final int index = actualList.indexOf(nodeGroup);
+        actualList.removeAll(recursiveChild);
+        super.setList(actualList);
         notifyItemChanged(index);
         notifyItemRangeRemoved(index + 1, recursiveChild.size());
     }

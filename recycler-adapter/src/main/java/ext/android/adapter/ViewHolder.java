@@ -1,8 +1,9 @@
 package ext.android.adapter;
 
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.collection.SparseArrayCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Administrator on 2017/6/6.

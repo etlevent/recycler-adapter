@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,6 @@ import ext.android.adapter.ItemViewDelegateConverter;
 import ext.android.adapter.RecyclerAdapter;
 import ext.android.adapter.ViewHolder;
 import ext.android.adapter.delegate.ItemViewDelegate;
-import ext.android.adapter.diff.DiffCapable;
 import ext.android.adapter.diff.PayloadsItemViewDelegate;
 import ext.android.adapter.wrapper.HeaderAndFooterWrapper;
 
@@ -34,11 +34,12 @@ public class LinearVerticalActivity extends AppCompatActivity {
     private RecyclerAdapter mAdapter;
     private HeaderAndFooterWrapper mWrapper;
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            mAdapter.setItems((List<?>) msg.obj);
+            mAdapter.setList((List<?>) msg.obj);
+            mAdapter.notifyDataSetChanged();
         }
     };
 
@@ -90,7 +91,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<IdModel> list = new ArrayList(mAdapter.getItems());
+                List<IdModel> list = new ArrayList(mAdapter.getList());
                 int index = random.nextInt(list.size());
                 list.add(index, new IdModel(list.size(), "add " + index));
                 index = random.nextInt(list.size());
@@ -102,33 +103,8 @@ public class LinearVerticalActivity extends AppCompatActivity {
                 newModel = new IdModel(model.getId(), "payloads!!!!!!!" + index);
                 list.set(0, newModel);
 
-                mAdapter.setItems(list, new DiffCapable<String>() {
-                    @Override
-                    public boolean isSame(int diff, Object oldItem, Object newItem) {
-                        if (oldItem instanceof IdModel && newItem instanceof IdModel) {
-                            final IdModel oldModel = (IdModel) oldItem;
-                            final IdModel newModel = (IdModel) newItem;
-                            if (diff == DIFF_ITEM) {
-                                return oldModel.getId() == newModel.getId();
-                            } else if (diff == DIFF_CONTENT) {
-                                return oldModel.getContent().equals(newModel.getContent());
-                            }
-                        }
-                        return oldItem.equals(newItem);
-                    }
-
-                    @Override
-                    public String payloads(Object oldItem, Object newItem) {
-                        if (oldItem instanceof IdModel && newItem instanceof IdModel) {
-                            final IdModel oldModel = (IdModel) oldItem;
-                            final IdModel newModel = (IdModel) newItem;
-                            if (!oldModel.getContent().equals(newModel.getContent())) {
-                                return newModel.getContent();
-                            }
-                        }
-                        return null;
-                    }
-                });
+                mAdapter.setList(list);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -146,7 +122,6 @@ public class LinearVerticalActivity extends AppCompatActivity {
 
         @Override
         public void payloads(ViewHolder holder, int position, List<String> payloads) {
-            super.payloads(holder, position, payloads);
             Log.e("RecyclerAdapter", "payloads=" + payloads);
             TextView textView = holder.findView(android.R.id.text1);
             textView.setText(payloads.get(0));
@@ -169,7 +144,6 @@ public class LinearVerticalActivity extends AppCompatActivity {
 
         @Override
         public void payloads(ViewHolder holder, int position, List<String> payloads) {
-            super.payloads(holder, position, payloads);
             TextView textView = holder.findView(android.R.id.text2);
             textView.setText(payloads.get(0));
         }

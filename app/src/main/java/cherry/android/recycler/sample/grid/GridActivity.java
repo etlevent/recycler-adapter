@@ -1,8 +1,8 @@
 package cherry.android.recycler.sample.grid;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;

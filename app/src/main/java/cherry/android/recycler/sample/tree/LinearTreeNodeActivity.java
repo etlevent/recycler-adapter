@@ -1,8 +1,9 @@
 package cherry.android.recycler.sample.tree;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public class LinearTreeNodeActivity extends RecyclerActivity {
         mRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mAdapter.setItems(randomData());
+                mAdapter.setList(randomData());
+                mAdapter.notifyDataSetChanged();
             }
         }, 100);
     }

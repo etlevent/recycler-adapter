@@ -1,18 +1,16 @@
 package cherry.android.recycler.sample.linear;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import ext.android.adapter.delegate.ItemViewDelegate;
-import ext.android.adapter.RecyclerAdapter;
-import ext.android.adapter.ItemViewDelegateConverter;
 import cherry.android.recycler.sample.R;
 import cherry.android.recycler.sample.delegate.SimpleDelegate1;
 import cherry.android.recycler.sample.delegate.SimpleDelegate2;
@@ -20,6 +18,9 @@ import cherry.android.recycler.sample.model.Foo;
 import cherry.android.recycler.sample.model.Foo1;
 import cherry.android.recycler.sample.model.Foo2;
 import cherry.android.recycler.sample.model.IFoo;
+import ext.android.adapter.ItemViewDelegateConverter;
+import ext.android.adapter.RecyclerAdapter;
+import ext.android.adapter.delegate.ItemViewDelegate;
 
 /**
  * Created by ROOT on 2017/8/9.
@@ -41,7 +42,7 @@ public class SecondActivity extends AppCompatActivity {
                 .bindDelegate(new SimpleDelegate1(), new SimpleDelegate2())
                 .to(new ItemViewDelegateConverter<Foo>() {
                     @Override
-                    public Class<? extends ItemViewDelegate> convert(Foo foo, int position) {
+                    public Class<? extends ItemViewDelegate<? extends Foo, ? extends RecyclerView.ViewHolder>> convert(Foo foo, int position) {
                         IFoo iFoo = foo.getBody();
                         if (iFoo instanceof Foo1)
                             return SimpleDelegate1.class;
@@ -60,7 +61,7 @@ public class SecondActivity extends AppCompatActivity {
             }
             list.add(foo);
         }
-        mAdapter.setItems(list);
+        mAdapter.setList(list);
         recyclerView.setAdapter(mAdapter);
     }
 }

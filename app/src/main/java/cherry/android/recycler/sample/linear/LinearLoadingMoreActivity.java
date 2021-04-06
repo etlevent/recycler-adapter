@@ -1,8 +1,8 @@
 package cherry.android.recycler.sample.linear;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -53,7 +53,8 @@ public class LinearLoadingMoreActivity extends RecyclerActivity {
                 for (int i = 0; i < 15; i++) {
                     mItems.add("it is item " + i);
                 }
-                mAdapter.setItems(mItems);
+                mAdapter.setList(mItems);
+                mAdapter.notifyDataSetChanged();
             }
         }, 300);
     }

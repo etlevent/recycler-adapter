@@ -1,10 +1,11 @@
 package ext.android.adapter.wrapper;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.collection.SparseArrayCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ext.android.adapter.ViewHolder;
 
@@ -18,8 +19,8 @@ public class HeaderAndFooterWrapper extends BaseWrapper {
     private static final int BASE_ITEM_TYPE_HEADER = 100000;
     private static final int BASE_ITEM_TYPE_FOOTER = 200000;
 
-    private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
-    private SparseArrayCompat<View> mFooterViews = new SparseArrayCompat<>();
+    private final SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
+    private final SparseArrayCompat<View> mFooterViews = new SparseArrayCompat<>();
 
     public HeaderAndFooterWrapper(RecyclerView.Adapter<? super RecyclerView.ViewHolder> adapter) {
         super(adapter);

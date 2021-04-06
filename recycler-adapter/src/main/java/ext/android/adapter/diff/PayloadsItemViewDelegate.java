@@ -1,6 +1,6 @@
 package ext.android.adapter.diff;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -15,10 +15,5 @@ public abstract class PayloadsItemViewDelegate<T, P, VH extends RecyclerView.Vie
 
     public PayloadsItemViewDelegate(int layoutId) {
         super(layoutId);
-    }
-
-    @Override
-    public void payloads(VH holder, int position, List<P> payloads) {
-        // default do nothing
     }
 }

@@ -1,11 +1,12 @@
 package ext.android.adapter.wrapper;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,12 @@ public abstract class BaseWrapper extends RecyclerView.Adapter<RecyclerView.View
     private final RecyclerView.Adapter<? super RecyclerView.ViewHolder> mInnerAdapter;
     private final List<Integer> mWrapperViewTypeList;
     RecyclerView mAttachedRecyclerView;
-    private final RecyclerView.AdapterDataObserver mDataObserver;
 
     BaseWrapper(@NonNull RecyclerView.Adapter<? super RecyclerView.ViewHolder> adapter) {
         mInnerAdapter = adapter;
         mWrapperViewTypeList = new ArrayList<>();
-        mDataObserver = new WrapperAdapterDataObserver();
-        adapter.registerAdapterDataObserver(mDataObserver);
+        RecyclerView.AdapterDataObserver dataObserver = new WrapperAdapterDataObserver();
+        adapter.registerAdapterDataObserver(dataObserver);
     }
 
     @Override

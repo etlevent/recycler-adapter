@@ -1,8 +1,9 @@
 package ext.android.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public abstract class AbstractRecyclerAdapter extends RecyclerView.Adapter<Recyc
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
+        ItemViewDelegate<?, ? extends RecyclerView.ViewHolder> delegate = mDelegateManager.getItemViewDelegate(viewType);
         RecyclerView.ViewHolder holder = delegate.createViewHolder(inflater, parent);
         setListener(holder.itemView, holder);
         return holder;
@@ -52,7 +53,7 @@ public abstract class AbstractRecyclerAdapter extends RecyclerView.Adapter<Recyc
     public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemCount() == 0) return;
         int viewType = holder.getItemViewType();
-        ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
+        ItemViewDelegate<Object, RecyclerView.ViewHolder> delegate = (ItemViewDelegate<Object, RecyclerView.ViewHolder>) mDelegateManager.getItemViewDelegate(viewType);
         // fix position refused with item size changed
         mPositionOffset = holder.getAdapterPosition() - position;
         // holder.itemView.setTag(R.id.item_position, position);
@@ -65,7 +66,7 @@ public abstract class AbstractRecyclerAdapter extends RecyclerView.Adapter<Recyc
             super.onBindViewHolder(holder, position, payloads);
         } else {
             int viewType = holder.getItemViewType();
-            ItemViewDelegate delegate = mDelegateManager.getItemViewDelegate(viewType);
+            ItemViewDelegate<?, ? extends RecyclerView.ViewHolder> delegate = mDelegateManager.getItemViewDelegate(viewType);
             if (PayloadsCapable.class.isAssignableFrom(delegate.getClass())) {
                 PayloadsCapable payloadsCapable = (PayloadsCapable) delegate;
                 holder.itemView.setTag(R.id.item_position, position);

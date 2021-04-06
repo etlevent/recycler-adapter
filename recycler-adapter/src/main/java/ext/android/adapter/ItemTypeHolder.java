@@ -1,10 +1,10 @@
 package ext.android.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.collection.SparseArrayCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ext.android.adapter.delegate.ItemViewDelegate;
 
@@ -14,34 +14,34 @@ import ext.android.adapter.delegate.ItemViewDelegate;
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public final class ItemTypeHolder<T> {
     private final Class<? extends T> itemTypeClass;
-    private final SparseArrayCompat<ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
+    private final SparseArrayCompat<ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>> delegates = new SparseArrayCompat<>(1);
     private ItemViewDelegateConverter<T> converter;
 
     @SafeVarargs
     public ItemTypeHolder(@NonNull Class<? extends T> itemTypeClass,
                           @Nullable ItemViewDelegateConverter<T> converter,
-                          @NonNull ItemViewDelegate<T, ? extends RecyclerView.ViewHolder>... delegates) {
+                          @NonNull ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder>... delegates) {
         this.itemTypeClass = itemTypeClass;
         this.converter = converter;
-        for (ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
+        for (ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate : delegates) {
             this.delegates.put(this.delegates.size(), delegate);
         }
     }
 
     public ItemTypeHolder(Class<? extends T> itemTypeClass,
-                          ItemViewDelegate<T, ? extends RecyclerView.ViewHolder> delegate) {
+                          ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate) {
         this.itemTypeClass = itemTypeClass;
         this.delegates.put(this.delegates.size(), delegate);
     }
 
     @SuppressWarnings("unchecked")
-    public ItemViewDelegate getItemViewDelegate(@NonNull Object item, int position) {
+    public ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> getItemViewDelegate(@NonNull Object item, int position) {
         if (this.converter == null) {
             return delegates.get(0);
         }
         Class<?> itemViewClass = this.converter.convert((T) item, position);
         for (int i = 0; i < delegates.size(); i++) {
-            ItemViewDelegate delegate = delegates.get(i);
+            ItemViewDelegate<? extends T, ? extends RecyclerView.ViewHolder> delegate = delegates.get(i);
             if (delegate == null) continue;
             if (itemViewClass.isAssignableFrom(delegate.getClass())) {
                 return delegate;

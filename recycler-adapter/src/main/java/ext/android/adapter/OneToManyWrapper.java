@@ -1,7 +1,7 @@
 package ext.android.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import ext.android.adapter.delegate.ItemViewDelegate;
 import ext.android.adapter.delegate.ItemViewDelegateManager;

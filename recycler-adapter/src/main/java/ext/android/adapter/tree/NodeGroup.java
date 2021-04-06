@@ -1,6 +1,6 @@
 package ext.android.adapter.tree;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class NodeGroup implements Node {
         return dispatchExpandAutomatic;
     }
 
-    public void setDispatchExpandAutomatic(boolean dispathExpandAutomatic) {
-        this.dispatchExpandAutomatic = dispathExpandAutomatic;
+    public void setDispatchExpandAutomatic(boolean dispatchExpandAutomatic) {
+        this.dispatchExpandAutomatic = dispatchExpandAutomatic;
     }
 }

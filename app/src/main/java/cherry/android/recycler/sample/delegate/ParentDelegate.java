@@ -1,6 +1,6 @@
 package cherry.android.recycler.sample.delegate;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.TextView;
 
 import cherry.android.recycler.sample.model.Parent;

@@ -1,21 +1,20 @@
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 import java.util.jar.JarFile
 
-def isAndroidLibrary = isAndroidLibrary(project)
-def artifactId = getArtifactId(project)
+def isAndroid = isAndroidLibrary(project)
+def _artifactId = getArtifactId(project)
 
 task sourcesJar(type: Jar) {
-    archivesBaseName = artifactId
-    if (!isAndroidLibrary) {
+    archivesBaseName = _artifactId
+    if (!isAndroid) {
         from sourceSets.main.java.srcDirs
     } else {
         from android.sourceSets.main.java.srcDirs
     }
     classifier = 'sources'
 }
-
-if (isAndroidLibrary) {
+if (isAndroid) {
     android.libraryVariants.all { variant ->
         if (variant.name == 'release') { //我们只需 release 的 javadoc
             task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
@@ -55,7 +54,7 @@ tasks.withType(Javadoc) {
         encoding 'UTF-8'
         charSet 'UTF-8'
         links "http://docs.oracle.com/javase/7/docs/api"
-        if (isAndroidLibrary) {
+        if (isAndroid) {
             linksOffline "https://developer.android.com/reference", "${android.sdkDirectory}/docs/reference"
             bootClasspath project.file(android.getBootClasspath().join(File.pathSeparator))
         }
@@ -73,38 +72,36 @@ def javadocSource() {
     return Collections.emptyList()
 }
 
-if (isAndroidLibrary) {
-    afterEvaluate {
-        //merge assets from jar
-        if (plugins.hasPlugin('com.android.library')) {
-            android.libraryVariants.all { variant ->
-                String suffix = variant.variantData.name.capitalize()
-                def copyAssets = tasks.create(name: "copy${suffix}AssetsInJar") {
-                    doLast {
-                        println "Run copy${suffix}AssetsInJar"
-                        def assetsDir = "${project.buildDir}${File.separator}intermediates${File.separator}generate_assets_in_jar${File.separator}${variant.variantData.name}${File.separator}$name"
-                        project.fileTree(include: ['*.jar'], dir: 'libs').files.each {
-                            def jarFile = new JarFile(it)
-                            jarFile.entries().each { jarEntry ->
-                                if (jarEntry.name.startsWith('assets')) {
-                                    File file = new File(assetsDir, jarEntry.name.replaceAll('assets', ''))
-                                    if (!file.parentFile.exists()) {
-                                        file.parentFile.mkdirs()
-                                    }
-                                    file.withOutputStream { out ->
-                                        jarFile.getInputStream(jarEntry).eachByte(1024) { buffer, count ->
-                                            out.write(buffer, 0, count)
-                                        }
+afterEvaluate {
+    //merge assets from jar
+    if (plugins.hasPlugin('com.android.library') && project.hasProperty('copyJarAssets')) {
+        android.libraryVariants.all { variant ->
+            String suffix = variant.name.capitalize()
+            def copyAssets = tasks.create(name: "copy${suffix}AssetsInJar") {
+                doLast {
+                    println "Run copy${suffix}AssetsInJar"
+                    def assetsDir = "${project.buildDir}${File.separator}intermediates${File.separator}generate_assets_in_jar${File.separator}${variant.variantData.name}${File.separator}$name"
+                    project.fileTree(include: ['*.jar'], dir: 'libs').files.each {
+                        def jarFile = new JarFile(it)
+                        jarFile.entries().each { jarEntry ->
+                            if (jarEntry.name.startsWith('assets')) {
+                                File file = new File(assetsDir, jarEntry.name.replaceAll('assets', ''))
+                                if (!file.parentFile.exists()) {
+                                    file.parentFile.mkdirs()
+                                }
+                                file.withOutputStream { out ->
+                                    jarFile.getInputStream(jarEntry).eachByte(1024) { buffer, count ->
+                                        out.write(buffer, 0, count)
                                     }
                                 }
                             }
                         }
-                        android.sourceSets.main.assets.srcDirs += file(assetsDir)
                     }
+                    android.sourceSets.main.assets.srcDirs += file(assetsDir)
                 }
-                def generateAssetsTask = tasks.findByName("generate${suffix}Assets")
-                generateAssetsTask.dependsOn copyAssets
             }
+            def generateAssetsTask = tasks.findByName("generate${suffix}Assets")
+            generateAssetsTask.dependsOn copyAssets
         }
     }
 }

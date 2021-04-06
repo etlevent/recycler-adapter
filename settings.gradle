@@ -1,1 +1,2 @@
+include ':recycler-adapter-binding'
 include ':app', ':recycler-adapter'

@@ -1,12 +1,17 @@
 package ext.android.adapter;
 
-import android.support.annotation.RestrictTo;
-import android.support.v4.util.ArrayMap;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import androidx.annotation.RestrictTo;
+import androidx.collection.ArrayMap;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
+
+import ext.android.adapter.delegate.ItemViewDelegate;
 
 /**
  * Created by ROOT on 2017/9/21.
@@ -20,6 +25,7 @@ public final class ViewHolderHelper {
         throw new AssertionError("no instance.");
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends RecyclerView.ViewHolder> T createViewHolder(Class<T> holder, View itemView) {
         Constructor<? extends RecyclerView.ViewHolder> constructor = CONSTRUCTOR_MAP.get(holder);
         if (constructor == null) {
@@ -32,8 +38,7 @@ public final class ViewHolderHelper {
         } catch (Exception e) {
             throw new IllegalArgumentException("cant create instance for class: " + holder, e);
         } finally {
-            if (constructor != null)
-                constructor.setAccessible(false);
+            constructor.setAccessible(false);
         }
 
     }
@@ -45,4 +50,37 @@ public final class ViewHolderHelper {
             throw new IllegalArgumentException("can't get construct in class: " + clazz + "(View itemView)", e);
         }
     }
+
+
+    @SuppressWarnings("unchecked")
+    public static <T, VH extends RecyclerView.ViewHolder> Class<VH> getViewHolderClassFromDelegate(Class<? extends ItemViewDelegate<T, ? extends VH>> itemViewDelegateClazz) {
+        Type type = itemViewDelegateClazz.getGenericSuperclass();
+        if (type != null && ParameterizedType.class.isAssignableFrom(type.getClass())) {
+            Type[] params = ((ParameterizedType) type).getActualTypeArguments();
+            if (params.length < 2) {
+                if (!ItemViewDelegate.class.isAssignableFrom(itemViewDelegateClazz)) {
+                    throw new IllegalArgumentException("cannot find class ViewHolder or extends ViewHolder");
+                }
+                final Class<?> superclass = itemViewDelegateClazz.getSuperclass();
+                if (superclass != null && ItemViewDelegate.class.isAssignableFrom(superclass))
+                    return getViewHolderClassFromDelegate((Class<? extends ItemViewDelegate<Object, ? extends VH>>) superclass);
+            }
+            for (Type param : params) {
+                if (Class.class.isAssignableFrom(param.getClass())) {
+                    Class<?> pClass = (Class<?>) param;
+                    if (RecyclerView.ViewHolder.class.isAssignableFrom(pClass)) {
+                        return (Class<VH>) pClass;
+                    }
+                }
+            }
+        }
+        final Class<?> superclass = itemViewDelegateClazz.getSuperclass();
+        if (superclass == null)
+            throw new IllegalArgumentException("cannot find class ViewHolder or extends ViewHolder");
+        if (!ItemViewDelegate.class.isAssignableFrom(superclass)) {
+            throw new IllegalArgumentException("cannot find class ViewHolder or extends ViewHolder");
+        }
+        return getViewHolderClassFromDelegate((Class<? extends ItemViewDelegate<Object, ? extends VH>>) superclass);
+    }
+
 }
