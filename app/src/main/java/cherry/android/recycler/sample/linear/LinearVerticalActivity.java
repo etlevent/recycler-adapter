@@ -89,6 +89,7 @@ public class LinearVerticalActivity extends AppCompatActivity {
         });
         final Random random = new Random();
         findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onClick(View v) {
                 List<IdModel> list = new ArrayList(mAdapter.getList());

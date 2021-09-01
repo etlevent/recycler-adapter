@@ -59,7 +59,6 @@ public class RecyclerAdapter extends AbstractRecyclerAdapter {
         this.mList = list;
     }
 
-    @SuppressWarnings("unchecked")
     public void submitList(@Nullable List<?> list) {
         if (mDiffer == null) {
             throw new NullPointerException("specified AsyncListDiffer First");

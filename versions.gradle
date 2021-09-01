@@ -63,7 +63,10 @@ def addRepos(RepositoryHandler handler) {
     } else {
         println 'you can use local repos with maven.local=xxx in local.properties.'
     }
-    handler.maven { url config.maven.nexusPublicUrl }
+    handler.maven {
+        allowInsecureProtocol = true
+        url config.maven.nexusPublicUrl
+    }
 }
 
 def getArtifactId(Project project) {
