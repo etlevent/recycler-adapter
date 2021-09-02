@@ -2,7 +2,7 @@ ext.config = [:]
 
 def config = [:]
 
-def git = 'https://github.com/LeonardoLaus'
+def git = 'https://github.com/etlevent'
 def desc = 'adapter for RecyclerView'
 
 def versions = [:]
